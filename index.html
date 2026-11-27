@@ -184,6 +184,19 @@
       .card .price{font-weight:900;font-size:1.08rem}
       .empty{padding:56px 0;text-align:center;color:var(--ink-2);font-size:1.05rem}
 
+      /* ---------- Coming Soon (empty category) ---------- */
+      .coming-soon{margin:30px auto 12px;max-width:660px;text-align:center;padding:clamp(38px,6vw,64px) clamp(20px,5vw,52px);background:radial-gradient(560px 200px at 50% -30px,rgba(200,16,46,.10),transparent 70%),var(--bg-soft);border:1px solid var(--line);border-radius:26px;position:relative;overflow:hidden}
+      .coming-soon::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:4px;border-radius:0 0 99px 99px;background:var(--accent)}
+      .coming-soon-art{width:132px;height:132px;margin:0 auto 24px;border-radius:50%;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);display:grid;place-items:center;animation:floaty 3.2s ease-in-out infinite}
+      .coming-soon-art svg{width:78px;height:78px;color:var(--ink)}
+      @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+      @media (prefers-reduced-motion: reduce){.coming-soon-art{animation:none}}
+      .coming-soon .coming-soon-kicker{margin:0 0 10px;font-size:.78rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+      .coming-soon h3{margin:0 0 12px;font-size:clamp(2rem,5vw,2.9rem);font-weight:900;letter-spacing:-.02em;line-height:1.08}
+      html[lang="ar"] .coming-soon h3{line-height:1.35}
+      .coming-soon h3 .accent{color:var(--accent)}
+      .coming-soon p{margin:0 auto 28px;max-width:44ch;color:var(--ink-2);font-size:1.02rem;line-height:1.65}
+
       /* Editorial */
       .editorial{display:grid;grid-template-columns:1.05fr 1fr;gap:0;border-radius:20px;overflow:hidden;background:var(--bg-soft);margin-top:64px}
       @media (max-width:860px){.editorial{grid-template-columns:1fr}}
@@ -482,6 +495,13 @@
         <button class="filter-clear" id="catClearFilters" type="button" hidden><span data-i18n="clearFilters">Effacer les filtres</span></button>
       </div>
       <div class="grid" id="catGrid"></div>
+      <div class="coming-soon" id="catComingSoon" hidden>
+        <div class="coming-soon-art" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M38 50h44l-4.5 50a10 10 0 0 1-10 9H52.5a10 10 0 0 1-10-9L38 50Z"/><path d="M48 50v-6a12 12 0 0 1 24 0v6"/><path d="M94 20l2.6 7.4L102 30l-7.4 2.6L94 40l-2.6-7.4L84 30l7.4-2.6Z" fill="var(--accent)" stroke="none"/><circle cx="27" cy="28" r="2.6" fill="var(--accent)" stroke="none"/></svg></div>
+        <p class="coming-soon-kicker" id="comingSoonKicker"></p>
+        <h3><span data-i18n="comingSoonTitle1">Bientôt</span> <span class="accent" data-i18n="comingSoonTitle2">disponible</span></h3>
+        <p data-i18n="comingSoonSub">De nouveaux articles arrivent très bientôt dans cette catégorie.</p>
+        <button class="btn dark" type="button" id="comingSoonBtn" data-i18n="cartEmptyBtn">Découvrir la boutique</button>
+      </div>
       <p class="empty" id="catEmptyMsg" hidden data-i18n="empty">Aucun article ne correspond &agrave; votre recherche.</p>
     </div></main>
 
@@ -744,6 +764,7 @@
           shopByCat:"Shop par catégorie", shopByCatSub:"Quatre univers, 100% homme.",
           news:"Nouveautés", newsSub:"Les derniers articles ajoutés à la boutique.",
           searchPh:"Rechercher un article…", empty:"Aucun article ne correspond à votre recherche.",
+          comingSoonTitle1:"Bientôt", comingSoonTitle2:"disponible", comingSoonSub:"De nouveaux articles arrivent très bientôt dans cette catégorie.",
           neuf:"Neuf", size:"Taille", articles:"articles", article:"article",
           editoKicker:"Collection traditionnelle", editoTitle:"La djellaba, l'élégance marocaine pour homme",
           editoText:"Cousue dans des tissus choisis, avec les finitions sfifa et aakad faites à la main, notre sélection traditionnelle garde l'âme de l'artisanat marocain — à porter au quotidien comme pour les grandes occasions.",
@@ -772,6 +793,7 @@
           shopByCat:"تسوق حسب الفئة", shopByCatSub:"أربعة عوالم، رجال 100%.",
           news:"الجديد", newsSub:"آخر المقالات المضافة إلى المتجر.",
           searchPh:"ابحث عن مقال…", empty:"لا يوجد أي مقال يطابق بحثك.",
+          comingSoonTitle1:"قريباً", comingSoonTitle2:"جداً", comingSoonSub:"مقالات جديدة قادمة قريباً جداً إلى هذه الفئة.",
           neuf:"جديد", size:"المقاس", articles:"مقالات", article:"مقال",
           editoKicker:"التشكيلة التقليدية", editoTitle:"الجلابة، أناقة مغربية للرجال",
           editoText:"مخيطة من أقمشة مختارة، بلمسات صفيفة وعقاد مصنوعة يدوياً، تشكيلتنا التقليدية تحافظ على روح الحرفة المغربية — للبس اليومي والمناسبات الكبيرة.",
@@ -800,6 +822,7 @@
           shopByCat:"Shop by category", shopByCatSub:"Four worlds, 100% men.",
           news:"New arrivals", newsSub:"The latest items added to the shop.",
           searchPh:"Search an item…", empty:"No item matches your search.",
+          comingSoonTitle1:"Coming", comingSoonTitle2:"Soon", comingSoonSub:"New items are coming very soon to this category.",
           neuf:"New", size:"Size", articles:"items", article:"item",
           editoKicker:"Traditional collection", editoTitle:"The djellaba, Moroccan elegance for men",
           editoText:"Sewn from selected fabrics, with hand-finished sfifa and aakad trims, our traditional selection keeps the soul of Moroccan craftsmanship — for everyday wear and grand occasions alike.",
@@ -1025,7 +1048,11 @@
         var list = visibleProducts();
         var grid = document.getElementById("catGrid");
         grid.innerHTML = list.map(cardHTML).join("");
-        document.getElementById("catEmptyMsg").hidden = list.length>0;
+        var allInCat = PRODUCTS.filter(function(p){ return productCats(p).indexOf(currentCat)!==-1; });
+        var trulyEmpty = allInCat.length===0;
+        document.getElementById("catComingSoon").hidden = !trulyEmpty;
+        document.getElementById("catEmptyMsg").hidden = !(list.length===0 && !trulyEmpty);
+        if (trulyEmpty) document.getElementById("comingSoonKicker").textContent = catLabel(currentCat);
         document.getElementById("catCount").textContent = list.length+" "+(list.length===1?t("article"):t("articles"));
         bindCards(grid);
         syncSearchInputs();
@@ -1577,6 +1604,7 @@
       document.getElementById("catFilterPrice").addEventListener("change", function(){ filterPrice = this.value; renderGrids(); });
       document.getElementById("catClearFilters").addEventListener("click", clearFilters);
       document.getElementById("catBackBtn").addEventListener("click", closeCategory);
+      document.getElementById("comingSoonBtn").addEventListener("click", closeCategory);
       window.addEventListener("hashchange", routeFromHash);
       document.getElementById("aboutBackBtn").addEventListener("click", closeAbout);
       document.getElementById("footAboutBtn").addEventListener("click", openAbout);
