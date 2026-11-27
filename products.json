@@ -107,6 +107,50 @@
         "en": "EddyW26-Sw Sweat-shirt"
       },
       "published": true
+    },
+    {
+      "id": "tommy-hilfiger-logo-tipped-sweat-a-capuche-mwymj385",
+      "name": {
+        "fr": "Tommy Hilfiger Logo Tipped Sweat à capuche",
+        "ar": "Tommy Hilfiger Logo Tipped Sweat à capuche",
+        "en": "Tommy Hilfiger Logo Tipped Sweat à capuche"
+      },
+      "price": 811,
+      "size": "S",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "cat": "hommes",
+      "cats": [
+        "hommes"
+      ],
+      "color": "Bleu vif",
+      "colors": [
+        {
+          "name": "Bleu vif",
+          "hex": "#6b7280"
+        }
+      ],
+      "img": "/images/products/tommy-hilfiger-logo-tipped-sweat-a-capuche-mwymj385-1.webp",
+      "images": [
+        "/images/products/tommy-hilfiger-logo-tipped-sweat-a-capuche-mwymj385-1.webp",
+        "/images/products/tommy-hilfiger-logo-tipped-sweat-a-capuche-mwymj385-2.webp",
+        "/images/products/tommy-hilfiger-logo-tipped-sweat-a-capuche-mwymj385-3.webp",
+        "/images/products/tommy-hilfiger-logo-tipped-sweat-a-capuche-mwymj385-4.webp"
+      ],
+      "desc": {
+        "fr": "Tommy Hilfiger Logo Tipped Sweat à capuche\n\nSweat-à-capuche à coupe régulière, poche kangourou et logo visible sur la poitrine. Poignets et ourlet garnis d’un liseré contrastant pour une touche sportive élégante — un modèle confortable et stylé, parfait pour le quotidien.\n\n• Capuche avec cordon de serrage + poche kangourou — pratique pour un usage urbain ou décontracté.\n• Poignets et ourlet avec « tipping » contrasté (bordures marquées) pour un look signature et sportif.\n• Coupe « regular fit » — confortable et facile à intégrer dans différentes tenues (jeans, chinos, etc.).\n\nMarque : Tommy Hilfiger\nCode produit : MW0MW32673C2B\nMatière: Coton Biologique (63%), Polyester Recyclé (37%).\nGenre : Homme\nGroupe d'âge : Adultes\nCouleur : Bleu vif",
+        "ar": "Tommy Hilfiger Logo Tipped Sweat à capuche\n\nSweat-à-capuche à coupe régulière, poche kangourou et logo visible sur la poitrine. Poignets et ourlet garnis d’un liseré contrastant pour une touche sportive élégante — un modèle confortable et stylé, parfait pour le quotidien.\n\n• Capuche avec cordon de serrage + poche kangourou — pratique pour un usage urbain ou décontracté.\n• Poignets et ourlet avec « tipping » contrasté (bordures marquées) pour un look signature et sportif.\n• Coupe « regular fit » — confortable et facile à intégrer dans différentes tenues (jeans, chinos, etc.).\n\nMarque : Tommy Hilfiger\nCode produit : MW0MW32673C2B\nMatière: Coton Biologique (63%), Polyester Recyclé (37%).\nGenre : Homme\nGroupe d'âge : Adultes\nCouleur : Bleu vif",
+        "en": "Tommy Hilfiger Logo Tipped Sweat à capuche\n\nSweat-à-capuche à coupe régulière, poche kangourou et logo visible sur la poitrine. Poignets et ourlet garnis d’un liseré contrastant pour une touche sportive élégante — un modèle confortable et stylé, parfait pour le quotidien.\n\n• Capuche avec cordon de serrage + poche kangourou — pratique pour un usage urbain ou décontracté.\n• Poignets et ourlet avec « tipping » contrasté (bordures marquées) pour un look signature et sportif.\n• Coupe « regular fit » — confortable et facile à intégrer dans différentes tenues (jeans, chinos, etc.).\n\nMarque : Tommy Hilfiger\nCode produit : MW0MW32673C2B\nMatière: Coton Biologique (63%), Polyester Recyclé (37%).\nGenre : Homme\nGroupe d'âge : Adultes\nCouleur : Bleu vif"
+      },
+      "alt": {
+        "fr": "Tommy Hilfiger Logo Tipped Sweat à capuche",
+        "ar": "Tommy Hilfiger Logo Tipped Sweat à capuche",
+        "en": "Tommy Hilfiger Logo Tipped Sweat à capuche"
+      },
+      "published": true
     }
   ]
 }
