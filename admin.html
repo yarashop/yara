@@ -28,6 +28,12 @@
   .btn-small { padding: 7px 12px; font-size: 13px; margin-left: 6px; }
   .btn-del { background: #c8102e; color: #fff; }
   .btn-hide { background: #eee; color: #111214; border: 1px solid #bbb; }
+  .btn-edit { background: #fff; color: #111214; border: 1px solid #111214; }
+  #cancelBtn { display: none; background: #eee; color: #111214; border: 1px solid #bbb; width: 100%; margin-top: 10px; }
+  #existingPhotos { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .existing-photo { position: relative; display: inline-block; }
+  .existing-photo img { width: 72px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+  .existing-photo button { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; padding: 0; border-radius: 50%; background: #c8102e; color: #fff; font-size: 14px; line-height: 1; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
   #msg { padding: 12px; border-radius: 6px; margin-bottom: 18px; font-size: 15px; display: none; }
   #msg.ok { display: block; background: #d9f2df; border: 1px solid #4caf50; color: #1b5e20; }
@@ -59,7 +65,7 @@
 <body>
 <header>
   <h1>YaraShop <span>— Admin</span></h1>
-  <p>Ajouter et supprimer des produits — pas besoin de toucher au code.</p>
+  <p>Ajouter, modifier et supprimer des produits — pas besoin de toucher au code.</p>
 </header>
 <main>
 
@@ -90,7 +96,7 @@
 
   <!-- 2. AJOUTER UN PRODUIT -->
   <section class="card">
-    <h2>2. Ajouter un produit</h2>
+    <h2 id="formTitle">2. Ajouter un produit</h2>
     <label for="pName">Nom du produit *</label>
     <input type="text" id="pName" placeholder="ex : T-shirt blanc" autocomplete="off">
     <label for="pPrice">Prix (DH) *</label>
@@ -119,8 +125,11 @@
     <textarea id="pDesc" rows="4" placeholder="ex : T-shirt blanc en coton, coupe regular.\nUn détail par ligne — les retours à la ligne sont gardés sur la page du produit."></textarea>
     <label for="pPhoto">Photos du produit * (JPG, PNG, WebP… — plusieurs photos possibles)</label>
     <input type="file" id="pPhoto" accept="image/*" multiple>
+    <div id="existingPhotos"></div>
+    <p class="hint" id="existingPhotosHint" style="display:none;">Photos actuelles — cliquez sur × pour en retirer une.</p>
     <div id="photoPreviews"></div>
     <button class="btn-red" id="addBtn" type="button">Ajouter le produit</button>
+    <button id="cancelBtn" type="button">Annuler la modification</button>
   </section>
 
   <!-- 3. LISTE DES PRODUITS -->
@@ -464,6 +473,92 @@
   buildColorChips();
   $("pColorCustom").addEventListener("input", updateColorSelected);
 
+  // ---------- modifier un produit ----------
+  var editingId = null;          // id du produit en cours de modification (null = mode ajout)
+  var editingPhotos = [];        // photos actuelles gardées pendant la modification
+  function resetForm() {
+    $("pName").value = ""; $("pPrice").value = ""; $("pDesc").value = "";
+    $("pSizeCustom").value = ""; selectedSizes = []; renderSizeChips(); updateSizeSelected();
+    $("pCatCustom").value = ""; selectedCats = []; renderCatChips(); updateCatSelected();
+    $("pColorCustom").value = ""; selectedColors = []; renderColorChips(); updateColorSelected();
+    $("pPhoto").value = ""; $("photoPreviews").innerHTML = "";
+    editingId = null; editingPhotos = [];
+    $("existingPhotos").innerHTML = ""; $("existingPhotosHint").style.display = "none";
+    $("formTitle").textContent = "2. Ajouter un produit";
+    $("addBtn").textContent = "Ajouter le produit";
+    $("cancelBtn").style.display = "none";
+  }
+  function productSizes(p) {
+    if (Array.isArray(p.sizes) && p.sizes.length) return p.sizes.map(String);
+    if (p.size) return [String(p.size)];
+    return [];
+  }
+  function productCats(p) {
+    if (Array.isArray(p.cats) && p.cats.length) return p.cats.map(String);
+    if (p.cat) return [String(p.cat)];
+    return [];
+  }
+  function renderExistingPhotos(cfg) {
+    var box = $("existingPhotos");
+    box.innerHTML = "";
+    $("existingPhotosHint").style.display = editingPhotos.length ? "block" : "none";
+    editingPhotos.forEach(function (path) {
+      var wrap = document.createElement("span");
+      wrap.className = "existing-photo";
+      var im = document.createElement("img");
+      im.src = rawImageUrl(cfg, path);
+      im.alt = "Photo actuelle";
+      im.onerror = function () { im.style.display = "none"; };
+      var x = document.createElement("button");
+      x.type = "button";
+      x.textContent = "×";
+      x.title = "Retirer cette photo";
+      x.addEventListener("click", function () {
+        editingPhotos = editingPhotos.filter(function (p) { return p !== path; });
+        renderExistingPhotos(cfg);
+      });
+      wrap.appendChild(im); wrap.appendChild(x);
+      box.appendChild(wrap);
+    });
+  }
+  function startEdit(p) {
+    var cfg = checkConfig(); if (!cfg) return;
+    var name = (p.name && (p.name.fr || p.name.en || p.name.ar)) || "";
+    if (typeof p.name === "string") name = p.name;
+    var desc = "";
+    if (typeof p.desc === "string") desc = p.desc;
+    else if (p.desc) desc = p.desc.fr || p.desc.en || p.desc.ar || "";
+    editingId = p.id;
+    $("pName").value = name;
+    $("pPrice").value = p.price;
+    $("pDesc").value = desc;
+    var allSizes = SIZE_PRESETS.concat(SHOE_PRESETS);
+    var sizes = productSizes(p);
+    selectedSizes = sizes.filter(function (s) { return allSizes.indexOf(s) !== -1; });
+    $("pSizeCustom").value = sizes.filter(function (s) { return allSizes.indexOf(s) === -1; }).join(", ");
+    renderSizeChips(); updateSizeSelected();
+    var catSlugs = CAT_PRESETS.map(function (c) { return c.slug; });
+    var cats = productCats(p);
+    selectedCats = cats.filter(function (c) { return catSlugs.indexOf(c) !== -1; });
+    $("pCatCustom").value = cats.filter(function (c) { return catSlugs.indexOf(c) === -1; }).join(", ");
+    renderCatChips(); updateCatSelected();
+    var colors = adminColors(p).map(function (c) { return c.name; });
+    selectedColors = colors.filter(function (n) { return findPresetColor(n); });
+    $("pColorCustom").value = colors.filter(function (n) { return !findPresetColor(n); }).join(", ");
+    renderColorChips(); updateColorSelected();
+    editingPhotos = (Array.isArray(p.images) && p.images.length) ? p.images.slice() : (p.img ? [p.img] : []);
+    renderExistingPhotos(cfg);
+    $("pPhoto").value = ""; $("photoPreviews").innerHTML = "";
+    $("formTitle").textContent = "2. Modifier le produit";
+    $("addBtn").textContent = "Enregistrer les modifications";
+    $("cancelBtn").style.display = "block";
+    showMsg("Modification de « " + name + " » — changez ce que vous voulez puis cliquez sur « Enregistrer les modifications ».", "info");
+  }
+  $("cancelBtn").addEventListener("click", function () {
+    resetForm();
+    showMsg("Modification annulée. Le formulaire est prêt pour un nouveau produit.", "info");
+  });
+
   // ---------- ajouter un produit ----------
   $("addBtn").addEventListener("click", async function () {
     var cfg = checkConfig(); if (!cfg) return;
@@ -479,53 +574,74 @@
     if (!sizes.length) { showMsg("Choisissez au moins une taille.", "err"); return; }
     if (!cats.length) { showMsg("Choisissez au moins une catégorie.", "err"); return; }
     if (!colors.length) { showMsg("Choisissez au moins une couleur.", "err"); return; }
-    if (!files.length) { showMsg("Choisissez au moins une photo du produit.", "err"); return; }
+    if (!files.length && (!editingId || !editingPhotos.length)) { showMsg("Choisissez au moins une photo du produit.", "err"); return; }
     var badFiles = files.filter(function (f) { return f.type.indexOf("image/") !== 0; });
     if (badFiles.length) {
       showMsg("Tous les fichiers choisis doivent être des images (JPG, PNG, WebP…).", "err"); return;
     }
     var btn = $("addBtn");
-    btn.disabled = true; btn.textContent = "Ajout en cours…";
-    showMsg("Envoi des photos (" + files.length + "), puis ajout du produit…", "info");
+    btn.disabled = true;
+    btn.textContent = editingId ? "Enregistrement…" : "Ajout en cours…";
+    showMsg(editingId ? "Enregistrement des modifications…" : "Envoi des photos (" + files.length + "), puis ajout du produit…", "info");
     try {
       var slug = slugify(name) + "-" + Date.now().toString(36);
       var imgPaths = [];
       for (var i = 0; i < files.length; i++) {
         imgPaths.push(await uploadPhoto(cfg, files[i], slug + "-" + (i + 1) + fileExt(files[i])));
       }
+      var finalImages = editingPhotos.concat(imgPaths);
       var current = await getProductsFile(cfg);
-      if (current.products.some(function (p) { return p.id === slug; })) {
-        throw new Error("Un produit avec ce nom existe déjà. Changez le nom.");
+      if (editingId) {
+        // --- mode modification : on met à jour le même produit (même id, même visibilité) ---
+        var idx = -1;
+        current.products.forEach(function (p, i) { if (p.id === editingId) idx = i; });
+        if (idx === -1) throw new Error("Produit introuvable. Actualisez la liste.");
+        var existing = current.products[idx];
+        existing.name = { fr: name, ar: name, en: name };
+        existing.price = price;
+        existing.size = sizes[0];
+        existing.sizes = sizes;
+        existing.cat = cats[0];
+        existing.cats = cats;
+        existing.color = colors[0].name;
+        existing.colors = colors;
+        existing.img = finalImages[0];
+        existing.images = finalImages;
+        existing.desc = { fr: desc, ar: desc, en: desc };
+        existing.alt = { fr: name, ar: name, en: name };
+        await saveProductsFile(cfg, current.products, current.sha, "Modifier le produit : " + name);
+        showMsg("Produit modifié ! Le site se met à jour dans 1-2 minutes.", "ok");
+      } else {
+        if (current.products.some(function (p) { return p.id === slug; })) {
+          throw new Error("Un produit avec ce nom existe déjà. Changez le nom.");
+        }
+        var product = {
+          id: slug,
+          name: { fr: name, ar: name, en: name },
+          price: price,
+          size: sizes[0],
+          sizes: sizes,
+          cat: cats[0],
+          cats: cats,
+          color: colors[0].name,
+          colors: colors,
+          img: imgPaths[0],
+          images: imgPaths,
+          desc: { fr: desc, ar: desc, en: desc },
+          alt: { fr: name, ar: name, en: name },
+          published: true
+        };
+        current.products.push(product);
+        await saveProductsFile(cfg, current.products, current.sha, "Ajouter le produit : " + name);
+        showMsg("Produit ajouté avec " + imgPaths.length + (imgPaths.length > 1 ? " photos" : " photo") + " ! Le site se met à jour dans 1-2 minutes.", "ok");
       }
-      var product = {
-        id: slug,
-        name: { fr: name, ar: name, en: name },
-        price: price,
-        size: sizes[0],
-        sizes: sizes,
-        cat: cats[0],
-        cats: cats,
-        color: colors[0].name,
-        colors: colors,
-        img: imgPaths[0],
-        images: imgPaths,
-        desc: { fr: desc, ar: desc, en: desc },
-        alt: { fr: name, ar: name, en: name },
-        published: true
-      };
-      current.products.push(product);
-      await saveProductsFile(cfg, current.products, current.sha, "Ajouter le produit : " + name);
-      showMsg("Produit ajouté avec " + imgPaths.length + (imgPaths.length > 1 ? " photos" : " photo") + " ! Le site se met à jour dans 1-2 minutes.", "ok");
-      $("pName").value = ""; $("pPrice").value = ""; $("pDesc").value = "";
-      $("pSizeCustom").value = ""; selectedSizes = []; renderSizeChips(); updateSizeSelected();
-      $("pCatCustom").value = ""; selectedCats = []; renderCatChips(); updateCatSelected();
-      $("pColorCustom").value = ""; selectedColors = []; renderColorChips(); updateColorSelected();
-      $("pPhoto").value = ""; $("photoPreviews").innerHTML = "";
+      resetForm();
       loadList();
     } catch (e) {
       showMsg(e.message, "err");
     } finally {
-      btn.disabled = false; btn.textContent = "Ajouter le produit";
+      btn.disabled = false;
+      btn.textContent = editingId ? "Enregistrer les modifications" : "Ajouter le produit";
     }
   });
 
@@ -598,7 +714,11 @@
         delBtn.className = "btn-small btn-del"; delBtn.type = "button";
         delBtn.textContent = "Supprimer";
         delBtn.addEventListener("click", function () { deleteProduct(p.id, name); });
-        actions.appendChild(toggleBtn); actions.appendChild(delBtn);
+        var editBtn = document.createElement("button");
+        editBtn.className = "btn-small btn-edit"; editBtn.type = "button";
+        editBtn.textContent = "Modifier";
+        editBtn.addEventListener("click", function () { startEdit(p); });
+        actions.appendChild(editBtn); actions.appendChild(toggleBtn); actions.appendChild(delBtn);
         div.appendChild(img); div.appendChild(info); div.appendChild(actions);
         list.appendChild(div);
       });
