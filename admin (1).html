@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — YaraShop</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f4f4f4; color: #111214; }
+  header { background: #111214; color: #fff; padding: 16px 20px; }
+  header h1 { margin: 0; font-size: 22px; }
+  header h1 span { color: #c8102e; }
+  header p { margin: 4px 0 0; font-size: 13px; color: #ccc; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+  .card h2 { margin: 0 0 12px; font-size: 18px; }
+  label { display: block; font-weight: bold; font-size: 14px; margin: 12px 0 4px; }
+  input[type="text"], input[type="password"], input[type="number"], select, textarea {
+    width: 100%; padding: 10px; font-size: 15px; border: 1px solid #bbb; border-radius: 6px;
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  input[type="file"] { font-size: 14px; }
+  .hint { font-size: 13px; color: #555; margin-top: 4px; }
+  button { cursor: pointer; border: none; border-radius: 6px; font-size: 15px; padding: 11px 18px; }
+  .btn-red { background: #c8102e; color: #fff; width: 100%; font-weight: bold; margin-top: 14px; }
+  .btn-red:disabled { background: #999; cursor: wait; }
+  .btn-dark { background: #111214; color: #fff; }
+  .btn-small { padding: 7px 12px; font-size: 13px; margin-left: 6px; }
+  .btn-del { background: #c8102e; color: #fff; }
+  .btn-hide { background: #eee; color: #111214; border: 1px solid #bbb; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  #msg { padding: 12px; border-radius: 6px; margin-bottom: 18px; font-size: 15px; display: none; }
+  #msg.ok { display: block; background: #d9f2df; border: 1px solid #4caf50; color: #1b5e20; }
+  #msg.err { display: block; background: #fde2e2; border: 1px solid #c8102e; color: #8f0f0f; }
+  #msg.info { display: block; background: #e3eefc; border: 1px solid #4a90d9; color: #144a7a; }
+  .product { display: flex; align-items: center; gap: 12px; border-top: 1px solid #eee; padding: 12px 0; }
+  .product:first-of-type { border-top: none; }
+  .product img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; background: #eee; }
+  .product .info { flex: 1; min-width: 0; }
+  .product .info b { display: block; font-size: 15px; }
+  .product .info span { font-size: 13px; color: #555; }
+  .product .actions { white-space: nowrap; }
+  .hidden-tag { display: inline-block; background: #111214; color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; }
+  .hidden-product { opacity: 0.55; }
+  ol.steps { font-size: 14px; line-height: 1.7; padding-left: 20px; margin: 0; }
+  code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+  #photoPreviews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  #photoPreviews img { width: 72px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+</style>
+</head>
+<body>
+<header>
+  <h1>YaraShop <span>— Admin</span></h1>
+  <p>Ajouter et supprimer des produits — pas besoin de toucher au code.</p>
+</header>
+<main>
+
+  <div id="msg"></div>
+
+  <!-- 1. CONFIGURATION -->
+  <section class="card">
+    <h2>1. Configuration (une seule fois)</h2>
+    <p class="hint">Ces informations restent dans <b>votre navigateur uniquement</b>. Elles ne sont jamais envoyées ailleurs que vers GitHub.</p>
+    <label for="owner">Nom d'utilisateur GitHub</label>
+    <input type="text" id="owner" placeholder="ex : yara-shop" autocomplete="off">
+    <label for="repo">Nom du dépôt (repo)</label>
+    <input type="text" id="repo" value="yarashop" autocomplete="off">
+    <label for="token">Token GitHub (mot de passe secret)</label>
+    <input type="password" id="token" placeholder="ghp_... ou github_pat_..." autocomplete="off">
+    <div class="hint">
+      Comment créer le token : GitHub → photo de profil → <b>Settings</b> → <b>Developer settings</b> →
+      <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b> →
+      choisir uniquement le dépôt <code>yarashop</code>, permission <b>Contents : Read and write</b>.
+      Copiez le token ici (il ne s'affiche qu'une seule fois sur GitHub).
+    </div>
+    <div class="row">
+      <button class="btn-dark" id="saveBtn" type="button">Enregistrer</button>
+      <button class="btn-dark" id="testBtn" type="button">Tester la connexion</button>
+    </div>
+    <p class="hint" id="testResult"></p>
+  </section>
+
+  <!-- 2. AJOUTER UN PRODUIT -->
+  <section class="card">
+    <h2>2. Ajouter un produit</h2>
+    <label for="pName">Nom du produit *</label>
+    <input type="text" id="pName" placeholder="ex : T-shirt blanc" autocomplete="off">
+    <label for="pPrice">Prix (DH) *</label>
+    <input type="number" id="pPrice" placeholder="ex : 150" min="0">
+    <label for="pSize">Taille</label>
+    <input type="text" id="pSize" placeholder="ex : M  ou  32  ou  42" autocomplete="off">
+    <label for="pCat">Catégorie</label>
+    <select id="pCat">
+      <option value="hommes">Hommes</option>
+      <option value="traditionnel">Traditionnel</option>
+      <option value="chaussures">Chaussures</option>
+      <option value="accessoires">Accessoires</option>
+    </select>
+    <label for="pDesc">Description</label>
+    <textarea id="pDesc" placeholder="ex : T-shirt blanc en coton, coupe regular."></textarea>
+    <label for="pPhoto">Photos du produit * (JPG, PNG, WebP… — plusieurs photos possibles)</label>
+    <input type="file" id="pPhoto" accept="image/*" multiple>
+    <div id="photoPreviews"></div>
+    <button class="btn-red" id="addBtn" type="button">Ajouter le produit</button>
+  </section>
+
+  <!-- 3. LISTE DES PRODUITS -->
+  <section class="card">
+    <h2>3. Mes produits</h2>
+    <button class="btn-dark" id="refreshBtn" type="button">Actualiser la liste</button>
+    <div id="productList" style="margin-top: 8px;"><p class="hint">Cliquez sur « Actualiser la liste » pour voir vos produits.</p></div>
+  </section>
+
+</main>
+<script>
+(function () {
+  "use strict";
+  var API = "https://api.github.com";
+
+  // ---------- helpers ----------
+  function $(id) { return document.getElementById(id); }
+  function showMsg(text, kind) {
+    var m = $("msg");
+    m.textContent = text;
+    m.className = kind || "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function slugify(text) {
+    return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50) || "produit";
+  }
+  function getConfig() {
+    return {
+      owner: ($("owner").value || "").trim(),
+      repo: ($("repo").value || "").trim() || "yarashop",
+      token: $("token").value || ""
+    };
+  }
+  function checkConfig() {
+    var c = getConfig();
+    if (!c.owner) { showMsg("Indiquez votre nom d'utilisateur GitHub (section 1).", "err"); return null; }
+    if (!c.token) { showMsg("Indiquez votre token GitHub (section 1).", "err"); return null; }
+    return c;
+  }
+  function apiHeaders(token) {
+    return { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
+  }
+  function friendlyError(status) {
+    if (status === 401) return "Token invalide ou expiré. Vérifiez le token (section 1).";
+    if (status === 403) return "Accès refusé. Le token n'a pas la permission Contents : Read and write sur ce dépôt.";
+    if (status === 404) return "Dépôt ou fichier introuvable. Vérifiez le nom d'utilisateur et le nom du dépôt.";
+    if (status === 409) return "Conflit : le fichier a changé entre-temps. Réessayez.";
+    if (status === 422) return "Données refusées par GitHub. Vérifiez le nom de la photo et réessayez.";
+    return "Erreur GitHub (code " + status + "). Réessayez.";
+  }
+  function readFileAsBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(String(r.result).split(",")[1]); };
+      r.onerror = function () { reject(new Error("Impossible de lire la photo.")); };
+      r.readAsDataURL(file);
+    });
+  }
+  // Extension réelle du fichier (jpg, png, webp, gif, avif…), sinon .jpg
+  function fileExt(file) {
+    var m = (file.name || "").match(/\.([a-zA-Z0-9]+)$/);
+    if (m) return "." + m[1].toLowerCase();
+    if (file.type === "image/png") return ".png";
+    if (file.type === "image/webp") return ".webp";
+    if (file.type === "image/gif") return ".gif";
+    if (file.type === "image/avif") return ".avif";
+    return ".jpg";
+  }
+  function b64decode(str) {
+    return decodeURIComponent(escape(atob(str.replace(/\n/g, ""))));
+  }
+  function b64encode(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  // ---------- GitHub API ----------
+  async function getProductsFile(cfg) {
+    var res = await fetch(API + "/repos/" + cfg.owner + "/" + cfg.repo + "/contents/products.json", {
+      headers: apiHeaders(cfg.token)
+    });
+    if (!res.ok) throw new Error(friendlyError(res.status));
+    var data = await res.json();
+    var json;
+    try { json = JSON.parse(b64decode(data.content)); }
+    catch (e) { throw new Error("Le fichier products.json est illisible. Vérifiez son contenu sur GitHub."); }
+    if (!json || !Array.isArray(json.products)) throw new Error("Le fichier products.json n'a pas le bon format.");
+    return { products: json.products, sha: data.sha };
+  }
+  async function saveProductsFile(cfg, products, sha, message) {
+    var body = {
+      message: message,
+      content: b64encode(JSON.stringify({ products: products }, null, 2) + "\n"),
+      branch: "main"
+    };
+    if (sha) body.sha = sha;
+    var res = await fetch(API + "/repos/" + cfg.owner + "/" + cfg.repo + "/contents/products.json", {
+      method: "PUT", headers: apiHeaders(cfg.token), body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(friendlyError(res.status));
+    return res.json();
+  }
+  // Sauvegarde avec une nouvelle tentative si le SHA a changé entre-temps
+  async function saveProductsWithRetry(cfg, products, message) {
+    var current = await getProductsFile(cfg);
+    try {
+      await saveProductsFile(cfg, products, current.sha, message);
+    } catch (e) {
+      if (String(e.message).indexOf("Conflit") !== -1) {
+        var fresh = await getProductsFile(cfg);
+        await saveProductsFile(cfg, products, fresh.sha, message);
+      } else { throw e; }
+    }
+  }
+  async function uploadPhoto(cfg, file, filename) {
+    var base64 = await readFileAsBase64(file);
+    var path = "images/products/" + filename;
+    var res = await fetch(API + "/repos/" + cfg.owner + "/" + cfg.repo + "/contents/" + path, {
+      method: "PUT",
+      headers: apiHeaders(cfg.token),
+      body: JSON.stringify({ message: "Ajouter la photo " + filename, content: base64, branch: "main" })
+    });
+    if (!res.ok) throw new Error(friendlyError(res.status));
+    return "/" + path;
+  }
+
+  // ---------- configuration : localStorage ----------
+  function loadSavedConfig() {
+    try {
+      $("owner").value = localStorage.getItem("yarashop_admin_owner") || "";
+      $("repo").value = localStorage.getItem("yarashop_admin_repo") || "yarashop";
+      $("token").value = localStorage.getItem("yarashop_admin_token") || "";
+    } catch (e) { /* navigateur sans localStorage : on continue sans sauvegarde */ }
+  }
+  $("saveBtn").addEventListener("click", function () {
+    var c = getConfig();
+    if (!c.owner || !c.token) { showMsg("Remplissez le nom d'utilisateur et le token avant d'enregistrer.", "err"); return; }
+    try {
+      localStorage.setItem("yarashop_admin_owner", c.owner);
+      localStorage.setItem("yarashop_admin_repo", c.repo);
+      localStorage.setItem("yarashop_admin_token", c.token);
+      showMsg("Configuration enregistrée dans votre navigateur.", "ok");
+    } catch (e) { showMsg("Configuration remplie (mais ce navigateur ne permet pas de la sauvegarder).", "info"); }
+  });
+  $("testBtn").addEventListener("click", async function () {
+    var cfg = checkConfig(); if (!cfg) return;
+    $("testResult").textContent = "Test en cours…";
+    try {
+      var f = await getProductsFile(cfg);
+      $("testResult").textContent = "Connexion réussie ! " + f.products.length + " produit(s) trouvé(s) dans la boutique.";
+      showMsg("Connexion réussie !", "ok");
+    } catch (e) {
+      $("testResult").textContent = "";
+      showMsg(e.message, "err");
+    }
+  });
+
+  // ---------- aperçu des photos (une vignette par photo choisie) ----------
+  $("pPhoto").addEventListener("change", function () {
+    var files = $("pPhoto").files;
+    var box = $("photoPreviews");
+    box.innerHTML = "";
+    Array.prototype.forEach.call(files, function (file) {
+      if (file.type.indexOf("image/") !== 0) return;
+      var r = new FileReader();
+      r.onload = function () {
+        var im = document.createElement("img");
+        im.src = String(r.result);
+        im.alt = file.name;
+        box.appendChild(im);
+      };
+      r.readAsDataURL(file);
+    });
+  });
+
+  // ---------- ajouter un produit ----------
+  $("addBtn").addEventListener("click", async function () {
+    var cfg = checkConfig(); if (!cfg) return;
+    var name = ($("pName").value || "").trim();
+    var price = Number($("pPrice").value);
+    var size = ($("pSize").value || "").trim();
+    var cat = $("pCat").value;
+    var desc = ($("pDesc").value || "").trim();
+    var files = Array.prototype.slice.call($("pPhoto").files);
+    if (!name) { showMsg("Indiquez le nom du produit.", "err"); return; }
+    if (!price || price <= 0) { showMsg("Indiquez un prix en DH (nombre supérieur à 0).", "err"); return; }
+    if (!files.length) { showMsg("Choisissez au moins une photo du produit.", "err"); return; }
+    var badFiles = files.filter(function (f) { return f.type.indexOf("image/") !== 0; });
+    if (badFiles.length) {
+      showMsg("Tous les fichiers choisis doivent être des images (JPG, PNG, WebP…).", "err"); return;
+    }
+    var btn = $("addBtn");
+    btn.disabled = true; btn.textContent = "Ajout en cours…";
+    showMsg("Envoi des photos (" + files.length + "), puis ajout du produit…", "info");
+    try {
+      var slug = slugify(name) + "-" + Date.now().toString(36);
+      var imgPaths = [];
+      for (var i = 0; i < files.length; i++) {
+        imgPaths.push(await uploadPhoto(cfg, files[i], slug + "-" + (i + 1) + fileExt(files[i])));
+      }
+      var current = await getProductsFile(cfg);
+      if (current.products.some(function (p) { return p.id === slug; })) {
+        throw new Error("Un produit avec ce nom existe déjà. Changez le nom.");
+      }
+      var product = {
+        id: slug,
+        name: { fr: name, ar: name, en: name },
+        price: price,
+        size: size,
+        cat: cat,
+        img: imgPaths[0],
+        images: imgPaths,
+        desc: { fr: desc, ar: desc, en: desc },
+        alt: { fr: name, ar: name, en: name },
+        published: true
+      };
+      current.products.push(product);
+      await saveProductsFile(cfg, current.products, current.sha, "Ajouter le produit : " + name);
+      showMsg("Produit ajouté avec " + imgPaths.length + (imgPaths.length > 1 ? " photos" : " photo") + " ! Le site se met à jour dans 1-2 minutes.", "ok");
+      $("pName").value = ""; $("pPrice").value = ""; $("pSize").value = ""; $("pDesc").value = "";
+      $("pPhoto").value = ""; $("photoPreviews").innerHTML = "";
+      loadList();
+    } catch (e) {
+      showMsg(e.message, "err");
+    } finally {
+      btn.disabled = false; btn.textContent = "Ajouter le produit";
+    }
+  });
+
+  // ---------- liste des produits ----------
+  function rawImageUrl(cfg, imgPath) {
+    return "https://raw.githubusercontent.com/" + cfg.owner + "/" + cfg.repo + "/main" + imgPath;
+  }
+  async function loadList() {
+    var cfg = checkConfig(); if (!cfg) return;
+    var list = $("productList");
+    list.innerHTML = "<p class='hint'>Chargement…</p>";
+    try {
+      var f = await getProductsFile(cfg);
+      if (!f.products.length) { list.innerHTML = "<p class='hint'>Aucun produit pour le moment.</p>"; return; }
+      list.innerHTML = "";
+      f.products.forEach(function (p) {
+        var div = document.createElement("div");
+        div.className = "product" + (p.published === false ? " hidden-product" : "");
+        var name = (p.name && (p.name.fr || p.name.en || p.name.ar)) || p.id || "Sans nom";
+        var img = document.createElement("img");
+        img.src = rawImageUrl(cfg, p.img || "");
+        img.alt = name;
+        img.onerror = function () { img.style.display = "none"; };
+        var info = document.createElement("div");
+        info.className = "info";
+        var title = document.createElement("b");
+        title.textContent = name;
+        if (p.published === false) {
+          var tag = document.createElement("span");
+          tag.className = "hidden-tag"; tag.textContent = "Masqué";
+          title.appendChild(tag);
+        }
+        var meta = document.createElement("span");
+        meta.textContent = (p.price || 0) + " DH" + (p.size ? "  •  Taille " + p.size : "") + "  •  " + (p.cat || "");
+        info.appendChild(title); info.appendChild(meta);
+        var actions = document.createElement("div");
+        actions.className = "actions";
+        var toggleBtn = document.createElement("button");
+        toggleBtn.className = "btn-small btn-hide"; toggleBtn.type = "button";
+        toggleBtn.textContent = p.published === false ? "Afficher" : "Masquer";
+        toggleBtn.addEventListener("click", function () { togglePublished(p.id); });
+        var delBtn = document.createElement("button");
+        delBtn.className = "btn-small btn-del"; delBtn.type = "button";
+        delBtn.textContent = "Supprimer";
+        delBtn.addEventListener("click", function () { deleteProduct(p.id, name); });
+        actions.appendChild(toggleBtn); actions.appendChild(delBtn);
+        div.appendChild(img); div.appendChild(info); div.appendChild(actions);
+        list.appendChild(div);
+      });
+    } catch (e) {
+      list.innerHTML = "";
+      showMsg(e.message, "err");
+    }
+  }
+  $("refreshBtn").addEventListener("click", loadList);
+
+  async function deleteProduct(id, name) {
+    var cfg = checkConfig(); if (!cfg) return;
+    if (!window.confirm("Supprimer « " + name + " » de la boutique ?")) return;
+    showMsg("Suppression en cours…", "info");
+    try {
+      var current = await getProductsFile(cfg);
+      var kept = current.products.filter(function (p) { return p.id !== id; });
+      if (kept.length === current.products.length) throw new Error("Produit introuvable. Actualisez la liste.");
+      await saveProductsFile(cfg, kept, current.sha, "Supprimer le produit : " + name);
+      showMsg("Produit supprimé ! Le site se met à jour dans 1-2 minutes.", "ok");
+      loadList();
+    } catch (e) { showMsg(e.message, "err"); }
+  }
+  async function togglePublished(id) {
+    var cfg = checkConfig(); if (!cfg) return;
+    try {
+      var current = await getProductsFile(cfg);
+      var found = false;
+      current.products.forEach(function (p) {
+        if (p.id === id) { p.published = p.published === false ? true : false; found = true; }
+      });
+      if (!found) throw new Error("Produit introuvable. Actualisez la liste.");
+      await saveProductsFile(cfg, current.products, current.sha, "Changer la visibilité du produit : " + id);
+      showMsg("Visibilité modifiée ! Le site se met à jour dans 1-2 minutes.", "ok");
+      loadList();
+    } catch (e) { showMsg(e.message, "err"); }
+  }
+
+  loadSavedConfig();
+})();
+</script>
+</body>
+</html>
