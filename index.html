@@ -263,6 +263,47 @@
       .also{margin-top:64px}
       .also h2{font-size:1.5rem;font-weight:900;margin:0 0 22px}
 
+      /* ---------- Promo ---------- */
+      .old-price{color:var(--ink-2);text-decoration:line-through;font-weight:600;font-size:.9em;margin-inline-start:6px}
+      .save-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:999px;white-space:nowrap}
+      .promo-line{margin-top:8px}
+      .card .price-wrap{white-space:nowrap}
+      .detail .price-line{margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+      .detail .price-line .old-price{font-size:1.05rem}
+      .detail .actions #dAddCart{flex:1 1 100%;justify-content:center}
+      /* ---------- Cart ---------- */
+      .cart-overlay{position:fixed;inset:0;background:rgba(10,10,12,.5);z-index:90;opacity:0;transition:opacity .25s ease}
+      .cart-overlay.open{opacity:1}
+      .cart-drawer{position:fixed;top:0;bottom:0;inset-inline-end:0;width:min(420px,94vw);background:var(--bg);color:var(--ink);z-index:95;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.28);transform:translateX(102%);transition:transform .28s ease}
+      html[dir="rtl"] .cart-drawer{transform:translateX(-102%)}
+      .cart-drawer.open{transform:translateX(0)}
+      .cart-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)}
+      .cart-head h2{margin:0;font-size:1.25rem;font-weight:900}
+      .cart-close{background:var(--chip);border:1px solid var(--line);border-radius:50%;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--ink);font-size:1.25rem;line-height:1}
+      .cart-items{flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;gap:14px}
+      .cart-item{display:flex;gap:12px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:14px}
+      .cart-item img{width:72px;height:86px;object-fit:cover;border-radius:10px;background:var(--bg-soft);flex:none}
+      .ci-info{flex:1;min-width:0}
+      .ci-info b{display:block;font-size:.95rem;line-height:1.3}
+      .ci-info .ci-meta{color:var(--ink-2);font-size:.85rem;margin-top:3px}
+      .ci-info .ci-price{font-weight:800;margin-top:6px;font-size:.95rem}
+      .ci-info .ci-price .old-price{font-size:.85rem}
+      .ci-qty{display:flex;align-items:center;gap:8px;margin-top:8px}
+      .ci-qty button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:800;cursor:pointer;display:grid;place-items:center;font-size:1rem;line-height:1}
+      .ci-qty button:hover{border-color:var(--ink)}
+      .ci-qty span{font-weight:800;min-width:18px;text-align:center}
+      .ci-remove{background:none;border:0;color:var(--ink-2);font-size:1.3rem;cursor:pointer;padding:4px;line-height:1;flex:none}
+      .ci-remove:hover{color:var(--accent)}
+      .cart-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px 20px;text-align:center;color:var(--ink-2)}
+      .cart-empty svg{width:56px;height:56px;color:var(--ink-2);opacity:.6}
+      .cart-foot{border-top:1px solid var(--line);padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px}
+      .cart-foot .row{display:flex;justify-content:space-between;gap:12px;font-size:.98rem}
+      .cart-foot .row.save{color:var(--accent);font-weight:700}
+      .cart-foot .row.total{font-size:1.15rem;font-weight:900;border-top:1px solid var(--line);padding-top:12px}
+      .cart-foot .whatsapp{justify-content:center;width:100%}
+      .cart-foot .ghost-btn{justify-content:center;width:100%;background:transparent;border:1.5px solid var(--ink);color:var(--ink);border-radius:999px;padding:13px 20px;font-weight:800;cursor:pointer;font-size:.95rem}
+      .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:13px 24px;border-radius:999px;font-weight:700;font-size:.95rem;z-index:130;opacity:0;transition:opacity .25s ease,transform .25s ease;pointer-events:none;box-shadow:var(--shadow);max-width:90vw;text-align:center}
+      .toast.show{opacity:1;transform:translate(-50%,0)}
       @media (prefers-reduced-motion: reduce){
         .marquee-track,.slide.active img,.editorial .ph img{animation:none}
         .slide{transition:none}
@@ -308,6 +349,10 @@
             <button class="fav-btn" id="favBtn" type="button" aria-label="Favoris">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
               <span class="fav-count" id="favCount" hidden>0</span>
+            </button>
+            <button class="fav-btn" id="cartBtn" type="button" aria-label="Panier">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              <span class="fav-count" id="cartCount" hidden>0</span>
             </button>
             <div class="lang-switch" role="group" aria-label="Langue">
               <button type="button" data-lang="fr" class="on">FR</button>
@@ -393,7 +438,7 @@
         <div class="info">
           <p class="catline" id="dCat"></p>
           <h1 id="dName"></h1>
-          <p class="price" id="dPrice"></p>
+          <p class="price-line"><span class="price" id="dPrice"></span><span class="old-price" id="dOldPrice"></span><span class="save-badge" id="dSaveBadge"></span></p>
           <div class="specs">
             <div class="row"><span data-i18n="specCat">Catégorie</span><span id="dSpecCat"></span></div>
             <div class="row"><span data-i18n="specSize">Taille</span><span id="dSize"></span></div>
@@ -418,6 +463,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8.5 8.2c.3-.7 1.3-.8 1.7-.1l.5.9c.2.4.1.9-.2 1.2l-.4.4a5.5 5.5 0 0 0 2.5 2.5l.4-.4c.3-.3.8-.4 1.2-.2l.9.5c.7.4.6 1.4-.1 1.7-2.9 1.3-8.3-4.1-7-7Z"/></svg>
               <span id="dWhatsText">Commander sur WhatsApp</span>
             </a>
+            <button class="btn dark" type="button" id="dAddCart"><span data-i18n="addCart">Ajouter au panier</span></button>
             <a class="btn ghost callbtn" id="dCall" href="tel:+212600457896">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               <span id="dCallText">Appeler</span>
@@ -462,6 +508,28 @@
       </div>
     </div></footer>
 
+    <!-- Cart drawer -->
+    <div class="cart-overlay" id="cartOverlay" hidden></div>
+    <aside class="cart-drawer" id="cartDrawer" aria-label="Panier" hidden>
+      <div class="cart-head">
+        <h2 data-i18n="cartTitle">Panier</h2>
+        <button class="cart-close" id="cartClose" type="button" aria-label="Fermer">×</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-empty" id="cartEmpty" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <p data-i18n="cartEmpty">Votre panier est vide.</p>
+        <button class="btn dark" type="button" id="cartEmptyBtn" data-i18n="cartEmptyBtn">Découvrir la boutique</button>
+      </div>
+      <div class="cart-foot" id="cartFoot">
+        <div class="row"><span data-i18n="cartSubtotal">Sous-total</span><b id="cartSubtotal"></b></div>
+        <div class="row save" id="cartSaveRow"><span data-i18n="cartSaved">Vous économisez</span><b id="cartSaved"></b></div>
+        <div class="row total"><span data-i18n="cartTotal">Total</span><b id="cartTotal"></b></div>
+        <a class="btn whatsapp" id="cartWhats" href="https://wa.me/212600457896" target="_blank" rel="noopener"><span data-i18n="cartOrder">Commander via WhatsApp</span></a>
+        <button class="ghost-btn" type="button" id="cartClear" data-i18n="cartClear">Vider le panier</button>
+      </div>
+    </aside>
+    <div class="toast" id="toast" hidden></div>
     <script>
       "use strict";
       /* ================= Data ================= */
@@ -490,6 +558,26 @@
       var WHATSAPP_NUMBER = "212600457896";
       var PHONE_DISPLAY = "+212 600 45 78 96";
       function waLink(text){ return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text); }
+      /* ================= Prices & promo ================= */
+      /* One shared formatter for every displayed price: "968.00 MAD", "1,290.00 MAD". */
+      function fmtPrice(n){
+        var v = Number(n) || 0;
+        return v.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}) + " MAD";
+      }
+      /* Discount per product: 10%, 25% or 50%, chosen deterministically from a
+         hash of the product id — the same product always shows the same %. */
+      var PROMO_PCTS = [10, 25, 50];
+      function promoPct(p){
+        var h = 0, s = String((p && p.id) || "");
+        for (var i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) >>> 0; }
+        return PROMO_PCTS[h % PROMO_PCTS.length];
+      }
+      function promoOldPrice(p){
+        var pct = promoPct(p);
+        var old = (Number(p.price) || 0) / (1 - pct/100);
+        return Math.round(old / 10) * 10;
+      }
+      function promoSaved(p){ return promoOldPrice(p) - (Number(p.price) || 0); }
       var PRODUCTS = []; /* loaded from products.json — edit products in /admin */
       function normText(v, fallback){
         if (typeof v === "string") return {fr:v, ar:v, en:v};
@@ -502,6 +590,7 @@
           .then(function(d){
             var list = Array.isArray(d) ? d : (d.products || []);
             PRODUCTS = list.filter(function(p){ return p && p.published !== false; }).map(function(p){
+              p.price = Number(p.price) || 0;
               p.name = normText(p.name, p.id);
               p.desc = normText(p.desc, "");
               p.alt = normText(p.alt, p.name.fr);
@@ -575,6 +664,7 @@
           favAdd:"Ajouter aux favoris", favRemove:"Retirer des favoris",
           themeDark:"Passer au mode sombre", themeLight:"Passer au mode clair",
           waBtn:"Commander sur WhatsApp", callBtn:"Appeler",
+          saveX:"Économisez %s%", addCart:"Ajouter au panier", cartTitle:"Panier", cartEmpty:"Votre panier est vide.", cartEmptyBtn:"Découvrir la boutique", cartSubtotal:"Sous-total", cartSaved:"Vous économisez", cartTotal:"Total", cartOrder:"Commander via WhatsApp", cartClear:"Vider le panier", addedToast:"Ajouté au panier", cartOrderMsg:"Bonjour YaraShop, je veux commander :", cartRemove:"Retirer",
           waMsg:"Bonjour YaraShop, je veux commander cet article : ",
           waGeneric:"Bonjour YaraShop, je veux des informations sur un article.",
           orderNote:"Commandez directement sur WhatsApp ou par téléphone au",
@@ -596,6 +686,7 @@
           favAdd:"أضف إلى المفضلة", favRemove:"احذف من المفضلة",
           themeDark:"التبديل إلى الوضع الداكن", themeLight:"التبديل إلى الوضع الفاتح",
           waBtn:"اطلب عبر واتساب", callBtn:"اتصل",
+          saveX:"وفّر %s%", addCart:"أضف إلى السلة", cartTitle:"السلة", cartEmpty:"سلتك فارغة.", cartEmptyBtn:"اكتشف المتجر", cartSubtotal:"المجموع الفرعي", cartSaved:"أنت توفّر", cartTotal:"المجموع", cartOrder:"اطلب عبر واتساب", cartClear:"أفرغ السلة", addedToast:"تمت الإضافة إلى السلة", cartOrderMsg:"سلام YaraShop، بغيت نطلب:", cartRemove:"احذف",
           waMsg:"سلام YaraShop، بغيت نطلب هاد المقال: ",
           waGeneric:"سلام YaraShop، بغيت معلومات على واحد المقال.",
           orderNote:"اطلب مباشرة عبر واتساب أو بالهاتف على",
@@ -617,6 +708,7 @@
           favAdd:"Add to favorites", favRemove:"Remove from favorites",
           themeDark:"Switch to dark mode", themeLight:"Switch to light mode",
           waBtn:"Order on WhatsApp", callBtn:"Call",
+          saveX:"Save %s%", addCart:"Add to cart", cartTitle:"Cart", cartEmpty:"Your cart is empty.", cartEmptyBtn:"Discover the shop", cartSubtotal:"Subtotal", cartSaved:"You save", cartTotal:"Total", cartOrder:"Order via WhatsApp", cartClear:"Clear cart", addedToast:"Added to cart", cartOrderMsg:"Hello YaraShop, I want to order:", cartRemove:"Remove",
           waMsg:"Hello YaraShop, I want to order this item: ",
           waGeneric:"Hello YaraShop, I'd like information about an item.",
           orderNote:"Order directly on WhatsApp or by phone at",
@@ -685,7 +777,8 @@
           + '<span class="badge">'+t("neuf")+'</span>'
           + '<button type="button" class="fav'+fav+'" data-fav="'+p.id+'" aria-label="'+t("favAdd")+'"><svg viewBox="0 0 24 24" fill="'+(favorites[p.id]?"currentColor":"none")+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button></div>'
           + '<div class="meta"><span class="cat">'+catsLabel(p)+'</span><h3>'+p.name[lang]+'</h3>'
-           + '<div class="row"><span class="size">'+sizesLabel(p)+'</span><span class="price">'+p.price+' DH</span></div>' + colorsDots(p) + '</div></article>';
+           + '<div class="row"><span class="size">'+sizesLabel(p)+'</span><span class="price-wrap"><span class="price">'+fmtPrice(p.price)+'</span><span class="old-price">'+fmtPrice(promoOldPrice(p))+'</span></span></div>'
+          + '<div class="promo-line"><span class="save-badge">'+t("saveX").replace("%s", promoPct(p))+'</span></div>' + colorsDots(p) + '</div></article>';
       }
       function bindCards(scope){
         var cards = scope.querySelectorAll(".card");
@@ -878,7 +971,7 @@
         if (selectedSize) parts.push(t("specSize") + " : " + selectedSize);
         if (selectedColor) parts.push(t("specColor") + " : " + selectedColor.name);
         var extra = parts.length ? " (" + parts.join(" · ") + ")" : "";
-        document.getElementById("dWhats").href = waLink(t("waMsg") + p.name[lang] + " — " + p.price + " DH" + extra);
+        document.getElementById("dWhats").href = waLink(t("waMsg") + p.name[lang] + " — " + fmtPrice(p.price) + extra);
       }
       function updateDetailSize(){
         var p = currentProduct; if (!p) return;
@@ -941,7 +1034,9 @@
         renderThumbs(p);
         document.getElementById("dCat").textContent = catsLabel(p);
         document.getElementById("dName").textContent = p.name[lang];
-        document.getElementById("dPrice").textContent = p.price+" DH";
+        document.getElementById("dPrice").textContent = fmtPrice(p.price);
+        document.getElementById("dOldPrice").textContent = fmtPrice(promoOldPrice(p));
+        document.getElementById("dSaveBadge").textContent = t("saveX").replace("%s", promoPct(p));
         document.getElementById("dSpecCat").textContent = catsLabel(p);
         if (isNew) descExpanded = false;
         renderDesc(p);
@@ -988,6 +1083,147 @@
         document.getElementById("shop").scrollIntoView({behavior:"auto"});
       }
 
+      /* ================= Cart (Panier) ================= */
+      var CART_KEY = "yarashop-cart";
+      var cart = [];
+      function loadCart(){
+        try {
+          var raw = localStorage.getItem(CART_KEY);
+          var parsed = raw ? JSON.parse(raw) : [];
+          cart = Array.isArray(parsed) ? parsed.filter(function(it){ return it && it.id; }) : [];
+        } catch(e){ cart = []; }
+      }
+      function saveCart(){ try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch(e){} }
+      function findProduct(id){ for (var i=0;i<PRODUCTS.length;i++) if (PRODUCTS[i].id===id) return PRODUCTS[i]; return null; }
+      function cartKey(id, size, color){ return id + "|" + (size || "") + "|" + (color || ""); }
+      function cartTotals(){
+        var sub = 0, saved = 0, count = 0;
+        cart.forEach(function(it){
+          var p = findProduct(it.id); if (!p) return;
+          sub += p.price * it.qty;
+          saved += promoSaved(p) * it.qty;
+          count += it.qty;
+        });
+        return { sub: sub, saved: saved, count: count };
+      }
+      function renderCartCount(){
+        var n = 0;
+        cart.forEach(function(it){ n += it.qty; });
+        var el = document.getElementById("cartCount");
+        el.textContent = n; el.hidden = n === 0;
+      }
+      function addToCart(){
+        var p = currentProduct; if (!p) return;
+        var size = selectedSize || "";
+        var color = selectedColor ? selectedColor.name : "";
+        var key = cartKey(p.id, size, color);
+        var found = null;
+        cart.forEach(function(it){ if (it.key === key) found = it; });
+        if (found) found.qty++;
+        else cart.push({ key: key, id: p.id, size: size, color: color, qty: 1 });
+        saveCart(); renderCart(); renderCartCount(); showToast(t("addedToast"));
+      }
+      function setQty(key, qty){
+        cart.forEach(function(it){ if (it.key === key) it.qty = qty; });
+        cart = cart.filter(function(it){ return it.qty > 0; });
+        saveCart(); renderCart(); renderCartCount();
+      }
+      function removeFromCart(key){
+        cart = cart.filter(function(it){ return it.key !== key; });
+        saveCart(); renderCart(); renderCartCount();
+      }
+      function renderCart(){
+        var box = document.getElementById("cartItems");
+        var items = cart.filter(function(it){ return !!findProduct(it.id); });
+        if (items.length !== cart.length){ cart = items; saveCart(); }
+        var totals = cartTotals();
+        box.innerHTML = "";
+        document.getElementById("cartEmpty").hidden = items.length > 0;
+        document.getElementById("cartFoot").style.display = items.length ? "" : "none";
+        items.forEach(function(it){
+          var p = findProduct(it.id);
+          var div = document.createElement("div");
+          div.className = "cart-item";
+          var im = document.createElement("img");
+          im.src = p.img || ""; im.alt = "";
+          var info = document.createElement("div");
+          info.className = "ci-info";
+          var nm = document.createElement("b");
+          nm.textContent = p.name[lang];
+          var meta = document.createElement("div");
+          meta.className = "ci-meta";
+          var parts = [];
+          if (it.size) parts.push(t("specSize") + " : " + it.size);
+          if (it.color) parts.push(t("specColor") + " : " + it.color);
+          meta.textContent = parts.join(" \u00b7 ");
+          var pr = document.createElement("div");
+          pr.className = "ci-price";
+          pr.appendChild(document.createTextNode(fmtPrice(p.price) + " "));
+          var old = document.createElement("span");
+          old.className = "old-price";
+          old.textContent = fmtPrice(promoOldPrice(p));
+          pr.appendChild(old);
+          var qty = document.createElement("div");
+          qty.className = "ci-qty";
+          var dec = document.createElement("button");
+          dec.type = "button"; dec.textContent = "\u2212";
+          dec.addEventListener("click", function(){ setQty(it.key, it.qty - 1); });
+          var qn = document.createElement("span");
+          qn.textContent = it.qty;
+          var inc = document.createElement("button");
+          inc.type = "button"; inc.textContent = "+";
+          inc.addEventListener("click", function(){ setQty(it.key, it.qty + 1); });
+          qty.appendChild(dec); qty.appendChild(qn); qty.appendChild(inc);
+          info.appendChild(nm); info.appendChild(meta); info.appendChild(pr); info.appendChild(qty);
+          var rm = document.createElement("button");
+          rm.type = "button"; rm.className = "ci-remove"; rm.textContent = "\u00d7";
+          rm.setAttribute("aria-label", t("cartRemove"));
+          rm.addEventListener("click", function(){ removeFromCart(it.key); });
+          div.appendChild(im); div.appendChild(info); div.appendChild(rm);
+          box.appendChild(div);
+        });
+        document.getElementById("cartSubtotal").textContent = fmtPrice(totals.sub);
+        document.getElementById("cartSaved").textContent = fmtPrice(totals.saved);
+        document.getElementById("cartSaveRow").style.display = totals.saved > 0 ? "" : "none";
+        document.getElementById("cartTotal").textContent = fmtPrice(totals.sub);
+        var lines = [t("cartOrderMsg")];
+        items.forEach(function(it){
+          var p = findProduct(it.id);
+          var parts = [p.name[lang]];
+          if (it.size) parts.push(t("specSize") + " : " + it.size);
+          if (it.color) parts.push(t("specColor") + " : " + it.color);
+          lines.push("\u2022 " + parts.join(" \u00b7 ") + " \u00d7 " + it.qty + " \u2014 " + fmtPrice(p.price * it.qty));
+        });
+        lines.push(t("cartTotal") + " : " + fmtPrice(totals.sub));
+        document.getElementById("cartWhats").href = waLink(lines.join("\n"));
+        renderCartCount();
+      }
+      function openCart(){
+        renderCart();
+        var d = document.getElementById("cartDrawer");
+        var o = document.getElementById("cartOverlay");
+        d.hidden = false; o.hidden = false;
+        requestAnimationFrame(function(){ d.classList.add("open"); o.classList.add("open"); });
+        document.body.style.overflow = "hidden";
+      }
+      function closeCart(){
+        var d = document.getElementById("cartDrawer");
+        var o = document.getElementById("cartOverlay");
+        d.classList.remove("open"); o.classList.remove("open");
+        document.body.style.overflow = "";
+        setTimeout(function(){ d.hidden = true; o.hidden = true; }, 300);
+      }
+      function cartIsOpen(){ return !document.getElementById("cartDrawer").hidden; }
+      var toastTimer = null;
+      function showToast(msg){
+        var el = document.getElementById("toast");
+        el.textContent = msg;
+        el.hidden = false;
+        el.classList.add("show");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){ el.classList.remove("show"); el.hidden = true; }, 2200);
+      }
+
       /* ================= Theme (light / dark) ================= */
       var THEME_KEY = "yarashop-theme";
       function currentTheme(){ return document.documentElement.getAttribute("data-theme")==="dark" ? "dark" : "light"; }
@@ -1021,6 +1257,13 @@
         document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
         applyI18n();
         updateThemeBtn();
+        document.getElementById("cartBtn").setAttribute("aria-label", t("cartTitle"));
+        /* Re-render everything that contains translated text (grid cards with
+           their promo badges, nav, chips, tiles, services, footer, marquee,
+           hero copy) so the whole shop switches language, not just the labels. */
+        renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid();
+        renderServices(); renderFootCats(); updateHeroCopy();
+        renderCart();
         var btns = document.querySelectorAll(".lang-switch button");
         for (var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-lang")===l);
         if (currentProduct) openDetail(currentProduct.id);
@@ -1046,6 +1289,13 @@
       });
       document.getElementById("dFav").addEventListener("click", function(){ if (currentProduct) toggleFav(currentProduct.id); });
       document.getElementById("dDescToggle").addEventListener("click", function(){ if (currentProduct){ descExpanded = !descExpanded; renderDesc(currentProduct); } });
+      loadCart(); renderCartCount();
+      document.getElementById("cartBtn").addEventListener("click", openCart);
+      document.getElementById("cartClose").addEventListener("click", closeCart);
+      document.getElementById("cartOverlay").addEventListener("click", closeCart);
+      document.getElementById("cartClear").addEventListener("click", function(){ cart = []; saveCart(); renderCart(); renderCartCount(); });
+      document.getElementById("cartEmptyBtn").addEventListener("click", function(){ closeCart(); if (currentProduct) closeDetail(); document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"}); });
+      document.getElementById("dAddCart").addEventListener("click", addToCart);
       document.getElementById("themeBtn").addEventListener("click", toggleTheme);
       document.getElementById("favBtn").addEventListener("click", function(){
         if (currentProduct) closeDetail();
@@ -1057,7 +1307,7 @@
       document.getElementById("dNext").addEventListener("click", function(){ showPhoto(currentPhoto+1); restartPhotoTimer(); });
       document.querySelector(".detail .gallery").addEventListener("mouseenter", stopPhotoTimer);
       document.querySelector(".detail .gallery").addEventListener("mouseleave", restartPhotoTimer);
-      document.addEventListener("keydown", function(e){ if (e.key==="Escape" && currentProduct) closeDetail(); });
+      document.addEventListener("keydown", function(e){ if (e.key==="Escape"){ if (cartIsOpen()) closeCart(); else if (currentProduct) closeDetail(); } });
 
       updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay();
     </script>
