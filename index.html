@@ -776,10 +776,10 @@
         document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
         var btns = document.querySelectorAll(".lang-switch button");
         for (var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-lang")===l);
-        function initSite(){ applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); }
-      loadProducts().then(initSite);
         if (currentProduct) openDetail(currentProduct.id);
       }
+      function initSite(){ applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); }
+      loadProducts().then(initSite);
 
       /* ================= Init ================= */
       document.querySelectorAll(".lang-switch button").forEach(function(b){
