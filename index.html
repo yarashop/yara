@@ -16,11 +16,11 @@
         --card:#ffffff; --chip:#f0f0ed; --shadow:0 10px 30px rgba(10,10,12,.10);
         --radius:14px;
       }
-      @media (prefers-color-scheme: dark){
-        :root{
-          --bg:#121315; --bg-soft:#1a1b1e; --ink:#f2f2f0; --ink-2:#b9bcc2; --line:#2c2e33;
-          --card:#1a1b1e; --chip:#232529; --shadow:0 10px 30px rgba(0,0,0,.45);
-        }
+      /* Dark theme — only when the visitor turns it on with the header
+         toggle (data-theme="dark" on <html>); light is the default. */
+      html[data-theme="dark"]{
+        --bg:#121315; --bg-soft:#1a1b1e; --ink:#f2f2f0; --ink-2:#b9bcc2; --line:#2c2e33;
+        --card:#1a1b1e; --chip:#232428; --shadow:0 10px 30px rgba(0,0,0,.45);
       }
       *{box-sizing:border-box}
       html{scroll-behavior:smooth}
@@ -53,6 +53,11 @@
       .header-actions{margin-inline-start:auto;display:flex;align-items:center;gap:10px}
       .fav-btn{position:relative;background:var(--chip);border:1px solid var(--line);border-radius:999px;width:42px;height:42px;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
       .fav-btn svg{width:20px;height:20px}
+      .theme-btn{position:relative;background:var(--chip);border:1px solid var(--line);border-radius:999px;width:42px;height:42px;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+      .theme-btn svg{width:20px;height:20px}
+      .theme-btn .icon-sun{display:none}
+      html[data-theme="dark"] .theme-btn .icon-sun{display:block}
+      html[data-theme="dark"] .theme-btn .icon-moon{display:none}
       .fav-count{position:absolute;top:-6px;inset-inline-end:-6px;background:var(--accent);color:#fff;font-size:.68rem;font-weight:800;min-width:19px;height:19px;border-radius:999px;display:grid;place-items:center;padding:0 5px}
       .fav-count[hidden]{display:none}
       .lang-switch{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
@@ -117,7 +122,7 @@
       /* Category tiles */
       .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
       @media (max-width:900px){.tiles{grid-template-columns:repeat(2,1fr)}}
-      .tile{position:relative;border:0;padding:0;border-radius:var(--radius);overflow:hidden;cursor:pointer;aspect-ratio:3/3.6;background:#ddd;text-align:start}
+      .tile{position:relative;border:0;padding:0;border-radius:var(--radius);overflow:hidden;cursor:pointer;aspect-ratio:3/3.6;background:var(--bg-soft);text-align:start}
       .tile img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease}
       .tile:hover img{transform:scale(1.06)}
       .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,8,.66),rgba(5,5,8,0) 55%)}
@@ -221,15 +226,15 @@
       .detail .size-picker{margin:22px 0 4px}
       .detail .size-picker h3{font-size:1rem;font-weight:800;margin:0 0 10px}
       .detail .size-btns{display:flex;gap:10px;flex-wrap:wrap}
-      .detail .size-btn{min-width:48px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:#fff;font-weight:500;font-size:.95rem;cursor:pointer;color:var(--ink)}
+      .detail .size-btn{min-width:48px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-weight:500;font-size:.95rem;cursor:pointer;color:var(--ink)}
       .detail .size-btn:hover{border-color:var(--ink)}
-      .detail .size-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+      .detail .size-btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
       .detail .color-picker{margin:22px 0 4px}
       .detail .color-picker h3{font-size:1rem;font-weight:800;margin:0 0 10px}
       .detail .color-btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-      .detail .color-btn{min-width:48px;max-width:140px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:#fff;font-weight:500;font-size:.95rem;cursor:pointer;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .detail .color-btn{min-width:48px;max-width:140px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-weight:500;font-size:.95rem;cursor:pointer;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .detail .color-btn:hover{border-color:var(--ink)}
-      .detail .color-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+      .detail .color-btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
       .detail .info h1{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:900;letter-spacing:-.02em;margin:6px 0 10px;line-height:1.08}
       html[lang="ar"] .detail .info h1{line-height:1.35}
       .detail .price{font-size:1.7rem;font-weight:900}
@@ -243,7 +248,7 @@
       .detail .desc-body{position:relative;background:var(--bg-soft);border:1px solid var(--line);border-inline-start:3px solid var(--accent);border-radius:14px;padding:18px 20px}
       .detail .desc-text{color:var(--ink-2);font-size:.97rem;line-height:1.75;white-space:pre-line;margin:0;max-width:62ch}
       .detail .desc.collapsed .desc-text{max-height:5.25em;overflow:hidden}
-      .detail .desc.collapsed .desc-body::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.8em;background:linear-gradient(to bottom,rgba(244,244,242,0),var(--bg-soft));background:linear-gradient(to bottom,color-mix(in srgb,var(--bg-soft) 0%,transparent),var(--bg-soft));border-radius:0 0 14px 14px;pointer-events:none}
+      .detail .desc.collapsed .desc-body::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.8em;background:linear-gradient(to bottom,transparent,var(--bg-soft));background:linear-gradient(to bottom,color-mix(in srgb,var(--bg-soft) 0%,transparent),var(--bg-soft));border-radius:0 0 14px 14px;pointer-events:none}
       .detail .desc-toggle{display:none;background:none;border:0;color:var(--accent);font-weight:800;font-size:.92rem;cursor:pointer;padding:10px 2px 0}
       .detail .desc-toggle:hover{text-decoration:underline}
       .detail .desc.has-more .desc-toggle{display:inline-block}
@@ -264,6 +269,16 @@
         html{scroll-behavior:auto}
       }
     </style>
+    <script>
+      /* Theme before first paint: saved choice wins, else system preference, else light. */
+      (function(){
+        try{
+          var saved = localStorage.getItem("yarashop-theme");
+          var theme = saved || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          document.documentElement.setAttribute("data-theme", theme);
+        }catch(e){ document.documentElement.setAttribute("data-theme","light"); }
+      })();
+    </script>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
       if (window.netlifyIdentity) {
@@ -286,6 +301,10 @@
           <a class="logo" href="#" id="logoHome">Yara<b>Shop</b></a>
           <nav class="main" id="mainNav" aria-label="Catégories"></nav>
           <div class="header-actions">
+            <button class="theme-btn" id="themeBtn" type="button" aria-label="Mode sombre" title="Mode sombre">
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            </button>
             <button class="fav-btn" id="favBtn" type="button" aria-label="Favoris">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
               <span class="fav-count" id="favCount" hidden>0</span>
@@ -554,6 +573,7 @@
           back:"Retour à la boutique", specCat:"Catégorie", specSize:"Taille", selectSize:"Sélectionnez la taille", sizes:"Tailles", specColor:"Couleur", selectColor:"Sélectionnez la couleur", colors:"Couleurs", color:"Couleur", specState:"État",
           descTitle:"Description", readMore:"Lire la suite", readLess:"Voir moins", also:"Vous aimerez aussi", continueBtn:"Continuer mes achats",
           favAdd:"Ajouter aux favoris", favRemove:"Retirer des favoris",
+          themeDark:"Passer au mode sombre", themeLight:"Passer au mode clair",
           waBtn:"Commander sur WhatsApp", callBtn:"Appeler",
           waMsg:"Bonjour YaraShop, je veux commander cet article : ",
           waGeneric:"Bonjour YaraShop, je veux des informations sur un article.",
@@ -574,6 +594,7 @@
           back:"العودة إلى المتجر", specCat:"الفئة", specSize:"المقاس", selectSize:"اختار المقاس", sizes:"المقاسات", specColor:"اللون", selectColor:"اختار اللون", colors:"الألوان", color:"اللون", specState:"الحالة",
           descTitle:"الوصف", readMore:"اقرأ المزيد", readLess:"عرض أقل", also:"قد يعجبك أيضاً", continueBtn:"أكمل التسوق",
           favAdd:"أضف إلى المفضلة", favRemove:"احذف من المفضلة",
+          themeDark:"التبديل إلى الوضع الداكن", themeLight:"التبديل إلى الوضع الفاتح",
           waBtn:"اطلب عبر واتساب", callBtn:"اتصل",
           waMsg:"سلام YaraShop، بغيت نطلب هاد المقال: ",
           waGeneric:"سلام YaraShop، بغيت معلومات على واحد المقال.",
@@ -594,6 +615,7 @@
           back:"Back to the shop", specCat:"Category", specSize:"Size", selectSize:"Select the size", sizes:"Sizes", specColor:"Color", selectColor:"Select the color", colors:"Colors", color:"Color", specState:"Condition",
           descTitle:"Description", readMore:"Read more", readLess:"Show less", also:"You may also like", continueBtn:"Continue shopping",
           favAdd:"Add to favorites", favRemove:"Remove from favorites",
+          themeDark:"Switch to dark mode", themeLight:"Switch to light mode",
           waBtn:"Order on WhatsApp", callBtn:"Call",
           waMsg:"Hello YaraShop, I want to order this item: ",
           waGeneric:"Hello YaraShop, I'd like information about an item.",
@@ -966,6 +988,26 @@
         document.getElementById("shop").scrollIntoView({behavior:"auto"});
       }
 
+      /* ================= Theme (light / dark) ================= */
+      var THEME_KEY = "yarashop-theme";
+      function currentTheme(){ return document.documentElement.getAttribute("data-theme")==="dark" ? "dark" : "light"; }
+      function updateThemeBtn(){
+        var b = document.getElementById("themeBtn");
+        if (!b) return;
+        var dark = currentTheme()==="dark";
+        var label = dark ? t("themeLight") : t("themeDark");
+        b.setAttribute("aria-label", label);
+        b.setAttribute("title", label);
+        var meta = document.querySelector('meta[name="color-scheme"]');
+        if (meta) meta.setAttribute("content", dark ? "dark" : "light");
+      }
+      function applyTheme(theme){
+        document.documentElement.setAttribute("data-theme", theme);
+        try { localStorage.setItem(THEME_KEY, theme); } catch(e){}
+        updateThemeBtn();
+      }
+      function toggleTheme(){ applyTheme(currentTheme()==="dark" ? "light" : "dark"); }
+
       /* ================= Language ================= */
       function applyI18n(){
         var els = document.querySelectorAll("[data-i18n]");
@@ -978,11 +1020,12 @@
         document.documentElement.lang = l;
         document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
         applyI18n();
+        updateThemeBtn();
         var btns = document.querySelectorAll(".lang-switch button");
         for (var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-lang")===l);
         if (currentProduct) openDetail(currentProduct.id);
       }
-      function initSite(){ applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); }
+      function initSite(){ updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); }
       loadProducts().then(initSite);
 
       /* ================= Init ================= */
@@ -1003,6 +1046,7 @@
       });
       document.getElementById("dFav").addEventListener("click", function(){ if (currentProduct) toggleFav(currentProduct.id); });
       document.getElementById("dDescToggle").addEventListener("click", function(){ if (currentProduct){ descExpanded = !descExpanded; renderDesc(currentProduct); } });
+      document.getElementById("themeBtn").addEventListener("click", toggleTheme);
       document.getElementById("favBtn").addEventListener("click", function(){
         if (currentProduct) closeDetail();
         document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"});
@@ -1015,7 +1059,7 @@
       document.querySelector(".detail .gallery").addEventListener("mouseleave", restartPhotoTimer);
       document.addEventListener("keydown", function(e){ if (e.key==="Escape" && currentProduct) closeDetail(); });
 
-      applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay();
+      updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay();
     </script>
   </body>
 </html>
