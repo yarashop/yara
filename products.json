@@ -166,6 +166,51 @@
         "en": "Tommy Hilfiger Logo Tipped Sweat à capuche"
       },
       "published": true
+    },
+    {
+      "id": "djellaba-homme-en-flanelle-mwyp5wi0",
+      "name": {
+        "fr": "Djellaba Homme en Flanelle",
+        "ar": "Djellaba Homme en Flanelle",
+        "en": "Djellaba Homme en Flanelle"
+      },
+      "price": 699,
+      "size": "M",
+      "sizes": [
+        "M",
+        "L",
+        "XL"
+      ],
+      "cat": "traditionnel",
+      "cats": [
+        "traditionnel"
+      ],
+      "color": "Gris Souris Chiné",
+      "colors": [
+        {
+          "name": "Gris Souris Chiné",
+          "hex": "#6b7280"
+        }
+      ],
+      "img": "/images/products/djellaba-homme-en-flanelle-mwyp5wi0-1.webp",
+      "images": [
+        "/images/products/djellaba-homme-en-flanelle-mwyp5wi0-1.webp",
+        "/images/products/djellaba-homme-en-flanelle-mwyp5wi0-2.webp",
+        "/images/products/djellaba-homme-en-flanelle-mwyp5wi0-3.webp",
+        "/images/products/djellaba-homme-en-flanelle-mwyp5wi0-4.webp",
+        "/images/products/djellaba-homme-en-flanelle-mwyp5wi0-5.webp"
+      ],
+      "desc": {
+        "fr": "Djellaba Homme en Flanelle – Gris Souris Chiné\nApportez une touche de clarté et de modernité à votre garde-robe d'hiver avec cette Djellaba en Flanelle Gris Souris. Ce modèle se distingue par son aspect chiné très actuel, offrant une alternative lumineuse aux teintes sombres tout en garantissant une chaleur absolue pour les journées fraîches.",
+        "ar": "Djellaba Homme en Flanelle – Gris Souris Chiné\nApportez une touche de clarté et de modernité à votre garde-robe d'hiver avec cette Djellaba en Flanelle Gris Souris. Ce modèle se distingue par son aspect chiné très actuel, offrant une alternative lumineuse aux teintes sombres tout en garantissant une chaleur absolue pour les journées fraîches.",
+        "en": "Djellaba Homme en Flanelle – Gris Souris Chiné\nApportez une touche de clarté et de modernité à votre garde-robe d'hiver avec cette Djellaba en Flanelle Gris Souris. Ce modèle se distingue par son aspect chiné très actuel, offrant une alternative lumineuse aux teintes sombres tout en garantissant une chaleur absolue pour les journées fraîches."
+      },
+      "alt": {
+        "fr": "Djellaba Homme en Flanelle",
+        "ar": "Djellaba Homme en Flanelle",
+        "en": "Djellaba Homme en Flanelle"
+      },
+      "published": true
     }
   ]
 }
