@@ -1,3 +1,27 @@
 {
-  "products": []
+  "products": [
+    {
+      "id": "veste-epaisse-en-maille-a-col-polo-en-peluche-et-f-mwyiyiq8",
+      "name": {
+        "fr": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim",
+        "ar": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim",
+        "en": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim"
+      },
+      "price": 599,
+      "size": "M",
+      "cat": "hommes",
+      "img": "/images/products/veste-epaisse-en-maille-a-col-polo-en-peluche-et-f-mwyiyiq8.png",
+      "desc": {
+        "fr": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim\n\nVeste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim\nMarron / Code produit : F4152AXBN581",
+        "ar": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim\n\nVeste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim\nMarron / Code produit : F4152AXBN581",
+        "en": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim\n\nVeste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim\nMarron / Code produit : F4152AXBN581"
+      },
+      "alt": {
+        "fr": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim",
+        "ar": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim",
+        "en": "Veste épaisse en maille à col polo en peluche et fermeture éclair Coupe slim"
+      },
+      "published": true
+    }
+  ]
 }
