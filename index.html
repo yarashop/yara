@@ -221,17 +221,15 @@
       .detail .size-picker{margin:22px 0 4px}
       .detail .size-picker h3{font-size:1rem;font-weight:800;margin:0 0 10px}
       .detail .size-btns{display:flex;gap:10px;flex-wrap:wrap}
-      .detail .size-btn{min-width:52px;padding:10px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;font-weight:800;font-size:.95rem;cursor:pointer;color:var(--ink)}
+      .detail .size-btn{min-width:48px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:#fff;font-weight:500;font-size:.95rem;cursor:pointer;color:var(--ink)}
       .detail .size-btn:hover{border-color:var(--ink)}
       .detail .size-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
       .detail .color-picker{margin:22px 0 4px}
       .detail .color-picker h3{font-size:1rem;font-weight:800;margin:0 0 10px}
-      .detail .color-btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-      .detail .color-btn{width:40px;height:40px;padding:0;border:2px solid var(--line);border-radius:50%;cursor:pointer;background:var(--bg-soft);display:grid;place-items:center}
-      .detail .color-btn i{width:26px;height:26px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.15)}
+      .detail .color-btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+      .detail .color-btn{min-width:48px;max-width:140px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:#fff;font-weight:500;font-size:.95rem;cursor:pointer;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .detail .color-btn:hover{border-color:var(--ink)}
-      .detail .color-btn.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
-      .detail .color-picker .color-name{font-weight:700;font-size:.95rem;margin:10px 0 0}
+      .detail .color-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
       .detail .info h1{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:900;letter-spacing:-.02em;margin:6px 0 10px;line-height:1.08}
       html[lang="ar"] .detail .info h1{line-height:1.35}
       .detail .price{font-size:1.7rem;font-weight:900}
@@ -384,13 +382,12 @@
             <div class="row"><span data-i18n="specState">État</span><span data-i18n="neuf">Neuf</span></div>
           </div>
           <div class="size-picker">
-            <h3 data-i18n="selectSize">Sélectionnez la taille</h3>
+            <h3><span data-i18n="specSize">Taille</span> :</h3>
             <div class="size-btns" id="dSizes"></div>
           </div>
           <div class="color-picker">
-            <h3 data-i18n="selectColor">Sélectionnez la couleur</h3>
+            <h3><span data-i18n="specColor">Couleur</span> : <span class="color-name" id="dColorName"></span></h3>
             <div class="color-btns" id="dColors"></div>
-            <p class="color-name" id="dColorName"></p>
           </div>
           <div class="desc" id="dDescBox">
             <h3 data-i18n="descTitle">Description</h3>
@@ -878,9 +875,7 @@
           b.setAttribute("aria-pressed", selectedColor && c.name === selectedColor.name ? "true" : "false");
           b.setAttribute("aria-label", c.name);
           b.title = c.name;
-          var dot = document.createElement("i");
-          dot.style.background = c.hex;
-          b.appendChild(dot);
+          b.textContent = c.name;
           b.addEventListener("click", function(){
             selectedColor = c;
             var btns = box.querySelectorAll(".color-btn");
@@ -982,6 +977,7 @@
         lang = l;
         document.documentElement.lang = l;
         document.documentElement.dir = l==="ar" ? "rtl" : "ltr";
+        applyI18n();
         var btns = document.querySelectorAll(".lang-switch button");
         for (var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-lang")===l);
         if (currentProduct) openDetail(currentProduct.id);
