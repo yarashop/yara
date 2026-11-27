@@ -1,29 +1,6 @@
 {
   "products": [
     {
-      "id": "djellaba",
-      "name": {
-        "fr": "TEST - Djellaba traditionnelle",
-        "ar": "TEST - جلابة تقليدية",
-        "en": "TEST - Traditional djellaba"
-      },
-      "price": 450,
-      "size": "L",
-      "cat": "traditionnel",
-      "img": "/images/products/test-djellaba-traditionnelle.jpg",
-      "desc": {
-        "fr": "Djellaba marocaine bleu nuit avec capuche, finitions sfifa et aakad cousues main. Tissu épais, idéale pour l'hiver et les occasions.",
-        "ar": "جلابة مغربية زرقاء داكنة بقب، بلمسات صفيفة وعقاد مخيطة يدوياً. قماش سميك، مثالية للشتاء والمناسبات.",
-        "en": "Midnight-blue Moroccan djellaba with hood, hand-sewn sfifa and aakad trims. Thick fabric, ideal for winter and special occasions."
-      },
-      "alt": {
-        "fr": "Homme portant une djellaba traditionnelle bleu nuit",
-        "ar": "رجل يرتدي جلابة تقليدية زرقاء داكنة",
-        "en": "Man wearing a midnight-blue traditional djellaba"
-      },
-      "published": true
-    },
-    {
       "id": "hoodie-noir",
       "name": {
         "fr": "TEST - Hoodie noir",
