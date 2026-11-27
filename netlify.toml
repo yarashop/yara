@@ -1,0 +1,10 @@
+# YaraShop sur Netlify — pas de build, le site est 100 % statique.
+# Pas de redirection SPA : la page détail d'un article s'ouvre en JavaScript
+# sur la même page (pas d'URL séparée), donc aucune règle de fallback n'est nécessaire.
+
+[[headers]]
+  for = "/products.json"
+  [headers.values]
+    # Toujours recharger la liste des produits : les changements faits
+    # dans /admin apparaissent immédiatement, sans cache.
+    Cache-Control = "no-cache"

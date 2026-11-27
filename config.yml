@@ -1,0 +1,105 @@
+# Decap CMS — configuration de l'admin YaraShop
+# Les produits sont dans products.json (à la racine du site).
+# Le site se met à jour tout seul après chaque publication dans l'admin.
+
+backend:
+  name: git-gateway
+  branch: main
+
+# Photos uploadées depuis l'admin : elles vont dans images/products/
+media_folder: "images/products"
+public_folder: "/images/products"
+
+collections:
+  - name: "products"
+    label: "Produits"
+    label_singular: "Produit"
+    description: "Les articles de la boutique YaraShop. Ajoutez un produit, modifiez-le ou supprimez-le — le site se met à jour tout seul après publication."
+    files:
+      - name: "products"
+        label: "Liste des produits"
+        file: "products.json"
+        fields:
+          - name: products
+            label: "Produits"
+            widget: list
+            fields:
+              - name: id
+                label: "ID (unique, lettres minuscules et tirets)"
+                widget: string
+                hint: "Exemple : jean-slim. Ne pas changer après publication."
+              - name: name
+                label: "Nom"
+                widget: object
+                fields:
+                  - name: fr
+                    label: "Nom (français)"
+                    widget: string
+                  - name: ar
+                    label: "Nom (arabe)"
+                    widget: string
+                    required: false
+                  - name: en
+                    label: "Nom (anglais)"
+                    widget: string
+                    required: false
+              - name: price
+                label: "Prix (DH)"
+                widget: number
+                value_type: int
+                min: 0
+              - name: size
+                label: "Taille"
+                widget: string
+                hint: "Exemple : 32, L, M, 42"
+              - name: cat
+                label: "Catégorie"
+                widget: select
+                options:
+                  - label: "Hommes"
+                    value: "hommes"
+                  - label: "Traditionnel"
+                    value: "traditionnel"
+                  - label: "Chaussures"
+                    value: "chaussures"
+                  - label: "Accessoires"
+                    value: "accessoires"
+              - name: img
+                label: "Photo"
+                widget: image
+              - name: desc
+                label: "Description"
+                widget: object
+                fields:
+                  - name: fr
+                    label: "Description (français)"
+                    widget: text
+                  - name: ar
+                    label: "Description (arabe)"
+                    widget: text
+                    required: false
+                  - name: en
+                    label: "Description (anglais)"
+                    widget: text
+                    required: false
+              - name: alt
+                label: "Texte de la photo (accessibilité)"
+                widget: object
+                required: false
+                fields:
+                  - name: fr
+                    label: "Français"
+                    widget: string
+                    required: false
+                  - name: ar
+                    label: "Arabe"
+                    widget: string
+                    required: false
+                  - name: en
+                    label: "Anglais"
+                    widget: string
+                    required: false
+              - name: published
+                label: "Publié (visible sur le site)"
+                widget: boolean
+                default: true

@@ -1,0 +1,142 @@
+{
+  "products": [
+    {
+      "id": "jean-slim",
+      "name": {
+        "fr": "TEST - Jean slim",
+        "ar": "TEST - جين سليم",
+        "en": "TEST - Slim jeans"
+      },
+      "price": 299,
+      "size": "32",
+      "cat": "hommes",
+      "img": "/images/products/test-jean-slim.jpg",
+      "desc": {
+        "fr": "Jean slim bleu foncé, coupe ajustée et denim stretch confortable. Cinq poches, fermeture zip et bouton.",
+        "ar": "جين سليم أزرق غامق، قصة ضيقة وقماش دنيم مطاطي مريح. خمسة جيوب وسحاب وزر للإغلاق.",
+        "en": "Dark blue slim jeans with a fitted cut and comfortable stretch denim. Five pockets, zip and button fastening."
+      },
+      "alt": {
+        "fr": "Homme portant un jean slim bleu foncé",
+        "ar": "رجل يرتدي جين سليم أزرق غامق",
+        "en": "Man wearing dark blue slim jeans"
+      },
+      "published": true
+    },
+    {
+      "id": "veste-cuir",
+      "name": {
+        "fr": "TEST - Veste en cuir",
+        "ar": "TEST - جاكيت جلد",
+        "en": "TEST - Leather jacket"
+      },
+      "price": 899,
+      "size": "L",
+      "cat": "hommes",
+      "img": "/images/products/test-veste-en-cuir.jpg",
+      "desc": {
+        "fr": "Veste biker en cuir noir, col à pressions, zip central et poches zippées. Doublure intérieure confortable.",
+        "ar": "جاكيت بايكر من الجلد الأسود، ياقة بأزرار ضغط وسحاب أمامي وجيوب بسحاب. بطانة داخلية مريحة.",
+        "en": "Black leather biker jacket with snap collar, front zip and zipped pockets. Comfortable inner lining."
+      },
+      "alt": {
+        "fr": "Homme portant une veste en cuir noir",
+        "ar": "رجل يرتدي جاكيت جلد أسود",
+        "en": "Man wearing a black leather jacket"
+      },
+      "published": true
+    },
+    {
+      "id": "djellaba",
+      "name": {
+        "fr": "TEST - Djellaba traditionnelle",
+        "ar": "TEST - جلابة تقليدية",
+        "en": "TEST - Traditional djellaba"
+      },
+      "price": 450,
+      "size": "L",
+      "cat": "traditionnel",
+      "img": "/images/products/test-djellaba-traditionnelle.jpg",
+      "desc": {
+        "fr": "Djellaba marocaine bleu nuit avec capuche, finitions sfifa et aakad cousues main. Tissu épais, idéale pour l'hiver et les occasions.",
+        "ar": "جلابة مغربية زرقاء داكنة بقب، بلمسات صفيفة وعقاد مخيطة يدوياً. قماش سميك، مثالية للشتاء والمناسبات.",
+        "en": "Midnight-blue Moroccan djellaba with hood, hand-sewn sfifa and aakad trims. Thick fabric, ideal for winter and special occasions."
+      },
+      "alt": {
+        "fr": "Homme portant une djellaba traditionnelle bleu nuit",
+        "ar": "رجل يرتدي جلابة تقليدية زرقاء داكنة",
+        "en": "Man wearing a midnight-blue traditional djellaba"
+      },
+      "published": true
+    },
+    {
+      "id": "hoodie-noir",
+      "name": {
+        "fr": "TEST - Hoodie noir",
+        "ar": "TEST - هودي أسود",
+        "en": "TEST - Black hoodie"
+      },
+      "price": 249,
+      "size": "M",
+      "cat": "hommes",
+      "img": "/images/products/test-hoodie-noir.jpg",
+      "desc": {
+        "fr": "Hoodie noir en molleton doux, capuche doublée, poche kangourou et finitions côtelées. Coupe regular.",
+        "ar": "هودي أسود من قماش قطني ناعم، قب مبطن وجيب كنغر وأطراف مضلعة. قصة عادية.",
+        "en": "Black hoodie in soft fleece, lined hood, kangaroo pocket and ribbed trims. Regular fit."
+      },
+      "alt": {
+        "fr": "Homme portant un hoodie noir",
+        "ar": "رجل يرتدي هودي أسود",
+        "en": "Man wearing a black hoodie"
+      },
+      "published": true
+    },
+    {
+      "id": "baskets-blanches",
+      "name": {
+        "fr": "TEST - Baskets blanches",
+        "ar": "TEST - سبرديلة بيضاء",
+        "en": "TEST - White sneakers"
+      },
+      "price": 399,
+      "size": "42",
+      "cat": "chaussures",
+      "img": "/images/products/test-baskets-blanches.jpg",
+      "desc": {
+        "fr": "Baskets basses blanches, tige souple et semelle confortable antidérapante. Le modèle qui va avec tout.",
+        "ar": "سبرديلة بيضاء منخفضة، خامة مرنة ونعل مريح مضاد للانزلاق. الموديل الذي يناسب كل شيء.",
+        "en": "White low-top sneakers with a flexible upper and comfortable non-slip sole. The pair that goes with everything."
+      },
+      "alt": {
+        "fr": "Paire de baskets blanches basses",
+        "ar": "زوج سبرديلة بيضاء منخفضة",
+        "en": "Pair of white low-top sneakers"
+      },
+      "published": true
+    },
+    {
+      "id": "veste-jean",
+      "name": {
+        "fr": "TEST - Veste en jean",
+        "ar": "TEST - جاكيت جين",
+        "en": "TEST - Denim jacket"
+      },
+      "price": 349,
+      "size": "M",
+      "cat": "hommes",
+      "img": "/images/products/test-veste-en-jean.jpg",
+      "desc": {
+        "fr": "Veste en jean bleu foncé, boutons métalliques et poches poitrine. Un classique à porter toute l'année.",
+        "ar": "جاكيت جين أزرق غامق، أزرار معدنية وجيوب على الصدر. قطعة كلاسيكية تلبس طوال السنة.",
+        "en": "Dark blue denim jacket with metal buttons and chest pockets. A classic to wear all year round."
+      },
+      "alt": {
+        "fr": "Homme portant une veste en jean bleu foncé",
+        "ar": "رجل يرتدي جاكيت جين أزرق غامق",
+        "en": "Man wearing a dark blue denim jacket"
+      },
+      "published": true
+    }
+  ]
+}
