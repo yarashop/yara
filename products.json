@@ -33,9 +33,8 @@
       "price": 399,
       "size": "S",
       "cat": "hommes",
-      "img": "/images/products/southblue-manteau-bouffant-a-col-montant-regular-f-mwyjog2s-1.jpg",
+      "img": "/images/products/southblue-manteau-bouffant-a-col-montant-regular-f-mwyjog2s-2.webp",
       "images": [
-        "/images/products/southblue-manteau-bouffant-a-col-montant-regular-f-mwyjog2s-1.jpg",
         "/images/products/southblue-manteau-bouffant-a-col-montant-regular-f-mwyjog2s-2.webp",
         "/images/products/southblue-manteau-bouffant-a-col-montant-regular-f-mwyjog2s-3.webp"
       ],
@@ -49,7 +48,24 @@
         "ar": "SOUTHBLUE Manteau Bouffant À Col Montant Regular Fit Pour Homme",
         "en": "SOUTHBLUE Manteau Bouffant À Col Montant Regular Fit Pour Homme"
       },
-      "published": true
+      "published": true,
+      "sizes": [
+        "S"
+      ],
+      "cats": [
+        "hommes"
+      ],
+      "color": "Noir",
+      "colors": [
+        {
+          "name": "Noir",
+          "hex": "#111214"
+        },
+        {
+          "name": "Bleu",
+          "hex": "#1e40af"
+        }
+      ]
     },
     {
       "id": "eddyw26-sw-sweat-shirt-mwyksyvh",
