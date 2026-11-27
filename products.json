@@ -1,29 +1,6 @@
 {
   "products": [
     {
-      "id": "jean-slim",
-      "name": {
-        "fr": "TEST - Jean slim",
-        "ar": "TEST - جين سليم",
-        "en": "TEST - Slim jeans"
-      },
-      "price": 299,
-      "size": "32",
-      "cat": "hommes",
-      "img": "/images/products/test-jean-slim.jpg",
-      "desc": {
-        "fr": "Jean slim bleu foncé, coupe ajustée et denim stretch confortable. Cinq poches, fermeture zip et bouton.",
-        "ar": "جين سليم أزرق غامق، قصة ضيقة وقماش دنيم مطاطي مريح. خمسة جيوب وسحاب وزر للإغلاق.",
-        "en": "Dark blue slim jeans with a fitted cut and comfortable stretch denim. Five pockets, zip and button fastening."
-      },
-      "alt": {
-        "fr": "Homme portant un jean slim bleu foncé",
-        "ar": "رجل يرتدي جين سليم أزرق غامق",
-        "en": "Man wearing dark blue slim jeans"
-      },
-      "published": true
-    },
-    {
       "id": "veste-cuir",
       "name": {
         "fr": "TEST - Veste en cuir",
