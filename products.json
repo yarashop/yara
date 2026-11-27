@@ -1,29 +1,6 @@
 {
   "products": [
     {
-      "id": "hoodie-noir",
-      "name": {
-        "fr": "TEST - Hoodie noir",
-        "ar": "TEST - هودي أسود",
-        "en": "TEST - Black hoodie"
-      },
-      "price": 249,
-      "size": "M",
-      "cat": "hommes",
-      "img": "/images/products/test-hoodie-noir.jpg",
-      "desc": {
-        "fr": "Hoodie noir en molleton doux, capuche doublée, poche kangourou et finitions côtelées. Coupe regular.",
-        "ar": "هودي أسود من قماش قطني ناعم، قب مبطن وجيب كنغر وأطراف مضلعة. قصة عادية.",
-        "en": "Black hoodie in soft fleece, lined hood, kangaroo pocket and ribbed trims. Regular fit."
-      },
-      "alt": {
-        "fr": "Homme portant un hoodie noir",
-        "ar": "رجل يرتدي هودي أسود",
-        "en": "Man wearing a black hoodie"
-      },
-      "published": true
-    },
-    {
       "id": "baskets-blanches",
       "name": {
         "fr": "TEST - Baskets blanches",
