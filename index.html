@@ -221,6 +221,7 @@
 
       /* ---------- Detail view ---------- */
       #detailView{display:none;padding:28px 0 70px}
+      #catView{padding:28px 0 70px}
       .back-btn{display:inline-flex;align-items:center;gap:9px;background:none;border:0;color:var(--ink);font-weight:700;cursor:pointer;padding:10px 0;font-size:.98rem}
       .back-btn svg{width:19px;height:19px}
       html[dir="rtl"] .back-btn svg{transform:scaleX(-1)}
@@ -456,6 +457,33 @@
         <section class="services" id="services"></section>
       </div>
     </main>
+
+    <!-- ============ CATEGORY VIEW ============ -->
+    <main id="catView" hidden><div class="wrap">
+      <button class="back-btn" id="catBackBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        <span data-i18n="back">Retour à la boutique</span>
+      </button>
+      <div class="sec-head"><div>
+        <h2 id="catTitle"></h2>
+      </div><span class="count" id="catCount"></span></div>
+      <div class="toolbar">
+        <div class="chips" id="catChips"></div>
+        <label class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="catSearchInput" data-i18n-ph="searchPh" placeholder="Rechercher un article&hellip;" />
+        </label>
+      </div>
+      <div class="filters" id="catFilters">
+        <span class="filters-label" data-i18n="filterTitle">Filtres</span>
+        <select id="catFilterSize" aria-label="Taille"></select>
+        <select id="catFilterColor" aria-label="Couleur"></select>
+        <select id="catFilterPrice" aria-label="Prix"></select>
+        <button class="filter-clear" id="catClearFilters" type="button" hidden><span data-i18n="clearFilters">Effacer les filtres</span></button>
+      </div>
+      <div class="grid" id="catGrid"></div>
+      <p class="empty" id="catEmptyMsg" hidden data-i18n="empty">Aucun article ne correspond &agrave; votre recherche.</p>
+    </div></main>
 
     <!-- ============ ABOUT VIEW ============ -->
     <main id="aboutView" hidden><div class="wrap">
@@ -801,6 +829,8 @@
       /* ================= State ================= */
       var lang = "fr";
       var filter = "all";
+      var currentCat = null; /* category slug shown in catView, or null on the shop */
+      var pendingScroll = false; /* scroll intent carried into routeFromHash */
       var query = "";
       var filterSize = "";
       var filterColor = "";
@@ -842,10 +872,12 @@
       }
       function renderChips(){
         var cats = ["all"].concat(allCats());
-        document.getElementById("chips").innerHTML = cats.map(function(c){
+        var html = cats.map(function(c){
           return '<button type="button" class="chip'+(filter===c?" on":"")+'" data-cat="'+c+'">'+(c==="all"?t("all"):catLabel(c))+"</button>";
         }).join("");
-        var btns = document.querySelectorAll("#chips .chip");
+        document.getElementById("chips").innerHTML = html;
+        document.getElementById("catChips").innerHTML = html;
+        var btns = document.querySelectorAll("#chips .chip, #catChips .chip");
         for (var i=0;i<btns.length;i++) btns[i].addEventListener("click", function(){ setFilter(this.getAttribute("data-cat"), false); });
       }
 
@@ -868,14 +900,14 @@
           return String(x).localeCompare(String(y));
         });
       }
-      function allSizes(){
+      function allSizes(scopeCat){
         var list = [];
-        PRODUCTS.forEach(function(p){ productSizes(p).forEach(function(s){ if (list.indexOf(s)===-1) list.push(s); }); });
+        PRODUCTS.forEach(function(p){ if (scopeCat && productCats(p).indexOf(scopeCat)===-1) return; productSizes(p).forEach(function(s){ if (list.indexOf(s)===-1) list.push(s); }); });
         return sortSizes(list);
       }
-      function allColors(){
+      function allColors(scopeCat){
         var list = [];
-        PRODUCTS.forEach(function(p){ productColors(p).forEach(function(c){ if (list.indexOf(c.name)===-1) list.push(c.name); }); });
+        PRODUCTS.forEach(function(p){ if (scopeCat && productCats(p).indexOf(scopeCat)===-1) return; productColors(p).forEach(function(c){ if (list.indexOf(c.name)===-1) list.push(c.name); }); });
         return list;
       }
       function priceRangeLabel(r){
@@ -883,29 +915,42 @@
         if (r.v==="o1000") return t("priceOver").replace("%s", fmtPrice(1000));
         return fmtPrice(r.min).replace(" MAD", "") + " \u2013 " + fmtPrice(r.max);
       }
+      function fillFilterSelect(el, options, allLabel, value, ariaLabel){
+        if (!el) return;
+        el.innerHTML = '<option value="">' + allLabel + '</option>' + options.map(function(s){ return '<option value="'+s+'"'+(s===value?' selected':'')+'>'+s+'</option>'; }).join("");
+        el.setAttribute("aria-label", ariaLabel);
+      }
       function renderFilters(){
         if (filterSize && allSizes().indexOf(filterSize)===-1) filterSize = "";
         if (filterColor && allColors().indexOf(filterColor)===-1) filterColor = "";
-        var sz = document.getElementById("filterSize");
-        sz.innerHTML = '<option value="">' + t("allSizes") + '</option>' + allSizes().map(function(s){ return '<option value="'+s+'"'+(s===filterSize?' selected':'')+'>'+s+'</option>'; }).join("");
-        sz.setAttribute("aria-label", t("size"));
-        var cl = document.getElementById("filterColor");
-        cl.innerHTML = '<option value="">' + t("allColors") + '</option>' + allColors().map(function(c){ return '<option value="'+c+'"'+(c===filterColor?' selected':'')+'>'+c+'</option>'; }).join("");
-        cl.setAttribute("aria-label", t("color"));
+        fillFilterSelect(document.getElementById("filterSize"), allSizes(), t("allSizes"), filterSize, t("size"));
+        fillFilterSelect(document.getElementById("filterColor"), allColors(), t("allColors"), filterColor, t("color"));
         var pr = document.getElementById("filterPrice");
         pr.innerHTML = '<option value="">' + t("allPrices") + '</option>' + PRICE_RANGES.map(function(r){ return '<option value="'+r.v+'"'+(r.v===filterPrice?' selected':'')+'>'+priceRangeLabel(r)+'</option>'; }).join("");
         pr.setAttribute("aria-label", t("priceLabel"));
+        /* Category page selects: options scoped to that category's products. */
+        var sc = currentCat || null;
+        fillFilterSelect(document.getElementById("catFilterSize"), allSizes(sc), t("allSizes"), filterSize, t("size"));
+        fillFilterSelect(document.getElementById("catFilterColor"), allColors(sc), t("allColors"), filterColor, t("color"));
+        var pr2 = document.getElementById("catFilterPrice");
+        pr2.innerHTML = pr.innerHTML;
+        pr2.setAttribute("aria-label", t("priceLabel"));
         updateClearFilters();
       }
-      function filtersActive(){ return !!(filterSize || filterColor || filterPrice || filter!=="all" || query); }
+      function filtersActive(){ return !!(filterSize || filterColor || filterPrice || query || (filter!=="all" && !currentCat)); }
       function updateClearFilters(){
+        var show = filtersActive();
         var b = document.getElementById("clearFilters");
-        if (b) b.hidden = !filtersActive();
+        if (b) b.hidden = !show;
+        var b2 = document.getElementById("catClearFilters");
+        if (b2) b2.hidden = !show;
       }
       function clearFilters(){
-        filter = "all"; query = ""; filterSize = ""; filterColor = ""; filterPrice = "";
+        query = ""; filterSize = ""; filterColor = ""; filterPrice = "";
+        if (!currentCat) filter = "all";
         var si = document.getElementById("searchInput"); if (si) si.value = "";
-        renderNav(); renderChips(); renderFilters(); renderGrid();
+        var ci = document.getElementById("catSearchInput"); if (ci) ci.value = "";
+        renderNav(); renderChips(); renderFilters(); renderGrids();
       }
       function renderTiles(){
         document.getElementById("tiles").innerHTML = allTiles().map(function(tl){
@@ -959,6 +1004,12 @@
           return true;
         });
       }
+      function syncSearchInputs(){
+        var si = document.getElementById("searchInput");
+        if (si && si.value !== query) si.value = query;
+        var ci = document.getElementById("catSearchInput");
+        if (ci && ci.value !== query) ci.value = query;
+      }
       function renderGrid(){
         var list = visibleProducts();
         var grid = document.getElementById("grid");
@@ -966,8 +1017,21 @@
         document.getElementById("emptyMsg").hidden = list.length>0;
         document.getElementById("prodCount").textContent = list.length+" "+(list.length===1?t("article"):t("articles"));
         bindCards(grid);
+        syncSearchInputs();
         updateClearFilters();
       }
+      function renderCatGrid(){
+        if (!currentCat) return;
+        var list = visibleProducts();
+        var grid = document.getElementById("catGrid");
+        grid.innerHTML = list.map(cardHTML).join("");
+        document.getElementById("catEmptyMsg").hidden = list.length>0;
+        document.getElementById("catCount").textContent = list.length+" "+(list.length===1?t("article"):t("articles"));
+        bindCards(grid);
+        syncSearchInputs();
+        updateClearFilters();
+      }
+      function renderGrids(){ renderGrid(); renderCatGrid(); }
       function renderServices(){
         document.getElementById("services").innerHTML = SERVICES.map(function(s){
           return '<div class="svc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+s.icon+'</svg><div><h3>'+s.t[lang]+"</h3><p>"+s.d[lang]+"</p></div></div>";
@@ -1028,19 +1092,62 @@
         slideTimer = setInterval(function(){ goSlide(currentSlide+1); }, 4600);
       }
 
-      /* ================= Views ================= */
-      function setFilter(cat, scroll){
-        filter = cat;
+      /* ================= Views + hash routing ================= */
+      /* Routes: "#/" shop, "#/categorie/<slug>" category page,
+         "#/produit/<id>" product detail, "#/apropos" about page.
+         Every navigation goes through the hash, so the browser Back /
+         Forward buttons and shared links work for every view. */
+      function navigateTo(hash, scroll){
+        pendingScroll = !!scroll;
+        if (location.hash === hash) routeFromHash();
+        else location.hash = hash;
+      }
+      function routeFromHash(){
+        var h = location.hash || "";
+        var m;
+        var scroll = pendingScroll; pendingScroll = false;
+        if ((m = h.match(/^#\/categorie\/(.+)$/))){ openCategoryView(decodeURIComponent(m[1])); return; }
+        if ((m = h.match(/^#\/produit\/(.+)$/))){
+          var p = findProduct(decodeURIComponent(m[1]));
+          if (p) openDetailView(p.id); else showShopView(scroll);
+          return;
+        }
+        if (h === "#/apropos"){ openAboutView(); return; }
+        showShopView(scroll);
+      }
+      function showShopView(scroll){
+        filter = "all"; currentCat = null;
         if (currentProduct){ stopPhotoTimer(); currentProduct = null; }
         document.getElementById("aboutView").hidden = true;
+        document.getElementById("catView").hidden = true;
         document.getElementById("homeView").style.display = "block";
         document.getElementById("detailView").style.display = "none";
-        renderNav(); renderChips(); renderGrid();
+        renderNav(); renderChips(); renderFilters(); renderGrids();
         if (scroll) document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"});
+      }
+      function openCategoryView(cat){
+        if (!cat || allCats().indexOf(cat)===-1){ showShopView(false); return; }
+        currentCat = cat; filter = cat;
+        if (currentProduct){ stopPhotoTimer(); currentProduct = null; }
+        /* Keep only size/color filters that exist in this category. */
+        if (filterSize && allSizes(cat).indexOf(filterSize)===-1) filterSize = "";
+        if (filterColor && allColors(cat).indexOf(filterColor)===-1) filterColor = "";
+        document.getElementById("aboutView").hidden = true;
+        document.getElementById("homeView").style.display = "none";
+        document.getElementById("detailView").style.display = "none";
+        document.getElementById("catView").hidden = false;
+        document.getElementById("catTitle").textContent = catLabel(cat);
+        renderNav(); renderChips(); renderFilters(); renderCatGrid();
+        window.scrollTo({top:0, behavior:"auto"});
+      }
+      function closeCategory(){ navigateTo("#/", false); }
+      function setFilter(cat, scroll){
+        if (cat === "all") navigateTo("#/", scroll);
+        else navigateTo("#/categorie/" + encodeURIComponent(cat), scroll);
       }
       function toggleFav(id){
         if (favorites[id]) delete favorites[id]; else favorites[id]=true;
-        renderFavCount(); renderGrid();
+        renderFavCount(); renderGrids();
         if (currentProduct && currentProduct.id===id) renderDetailFav();
         var also = document.getElementById("alsoGrid");
         if (currentProduct) renderAlso();
@@ -1178,10 +1285,11 @@
         btn.setAttribute("aria-expanded", (!isLong || descExpanded) ? "true" : "false");
         btn.textContent = descExpanded ? t("readLess") : t("readMore");
       }
-      function openDetail(id){
+      function openDetailView(id, force){
         var p = null;
         for (var i=0;i<PRODUCTS.length;i++) if (PRODUCTS[i].id===id) p = PRODUCTS[i];
         if (!p) return;
+        if (!force && currentProduct && currentProduct.id===id) return;
         var isNew = !currentProduct || currentProduct.id !== p.id;
         currentProduct = p;
         document.getElementById("dImg").src = p.img;
@@ -1212,10 +1320,12 @@
         renderAlso();
         restartPhotoTimer();
         document.getElementById("aboutView").hidden = true;
+        document.getElementById("catView").hidden = true;
         document.getElementById("homeView").style.display = "none";
         document.getElementById("detailView").style.display = "block";
         window.scrollTo({top:0, behavior:"auto"});
       }
+      function openDetail(id){ navigateTo("#/produit/" + encodeURIComponent(id), false); }
       function renderDetailFav(){
         if (!currentProduct) return;
         var on = !!favorites[currentProduct.id];
@@ -1235,23 +1345,25 @@
       function closeDetail(){
         stopPhotoTimer();
         currentProduct = null;
-        document.getElementById("detailView").style.display = "none";
-        document.getElementById("homeView").style.display = "block";
-        document.getElementById("shop").scrollIntoView({behavior:"auto"});
+        /* Back to where the product was opened from: its category page,
+           or the shop when it was opened from the shop. */
+        if (currentCat) navigateTo("#/categorie/" + encodeURIComponent(currentCat), false);
+        else navigateTo("#/", true);
       }
 
       /* ================= About view + floating WhatsApp ================= */
-      function openAbout(){
+      function openAbout(){ navigateTo("#/apropos", false); }
+      function openAboutView(){
         if (currentProduct){ stopPhotoTimer(); currentProduct = null; }
         document.getElementById("homeView").style.display = "none";
         document.getElementById("detailView").style.display = "none";
+        document.getElementById("catView").hidden = true;
         document.getElementById("aboutView").hidden = false;
         window.scrollTo({top:0, behavior:"auto"});
       }
       function closeAbout(){
-        document.getElementById("aboutView").hidden = true;
-        document.getElementById("homeView").style.display = "block";
-        window.scrollTo({top:0, behavior:"auto"});
+        if (currentCat) navigateTo("#/categorie/" + encodeURIComponent(currentCat), false);
+        else navigateTo("#/", false);
       }
       function updateWaFloat(){
         var href = waLink(t("waFloatMsg"));
@@ -1439,25 +1551,33 @@
         /* Re-render everything that contains translated text (grid cards with
            their promo badges, nav, chips, tiles, services, footer, marquee,
            hero copy) so the whole shop switches language, not just the labels. */
-        renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrid();
+        renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrids();
         renderServices(); renderFootCats(); updateHeroCopy();
         renderCart(); updateWaFloat();
+        if (currentCat) document.getElementById("catTitle").textContent = catLabel(currentCat);
         var btns = document.querySelectorAll(".lang-switch button");
         for (var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-lang")===l);
-        if (currentProduct) openDetail(currentProduct.id);
+        if (currentProduct) openDetailView(currentProduct.id, true);
       }
-      function initSite(){ updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); updateWaFloat(); }
+      function initSite(){ updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); updateWaFloat(); routeFromHash(); }
       loadProducts().then(initSite);
 
       /* ================= Init ================= */
       document.querySelectorAll(".lang-switch button").forEach(function(b){
         b.addEventListener("click", function(){ setLang(this.getAttribute("data-lang")); });
       });
-      document.getElementById("searchInput").addEventListener("input", function(){ query = this.value.trim(); renderGrid(); });
-      document.getElementById("filterSize").addEventListener("change", function(){ filterSize = this.value; renderGrid(); });
-      document.getElementById("filterColor").addEventListener("change", function(){ filterColor = this.value; renderGrid(); });
-      document.getElementById("filterPrice").addEventListener("change", function(){ filterPrice = this.value; renderGrid(); });
+      document.getElementById("searchInput").addEventListener("input", function(){ query = this.value.trim(); renderGrids(); });
+      document.getElementById("filterSize").addEventListener("change", function(){ filterSize = this.value; renderGrids(); });
+      document.getElementById("filterColor").addEventListener("change", function(){ filterColor = this.value; renderGrids(); });
+      document.getElementById("filterPrice").addEventListener("change", function(){ filterPrice = this.value; renderGrids(); });
       document.getElementById("clearFilters").addEventListener("click", clearFilters);
+      document.getElementById("catSearchInput").addEventListener("input", function(){ query = this.value.trim(); renderGrids(); });
+      document.getElementById("catFilterSize").addEventListener("change", function(){ filterSize = this.value; renderGrids(); });
+      document.getElementById("catFilterColor").addEventListener("change", function(){ filterColor = this.value; renderGrids(); });
+      document.getElementById("catFilterPrice").addEventListener("change", function(){ filterPrice = this.value; renderGrids(); });
+      document.getElementById("catClearFilters").addEventListener("click", clearFilters);
+      document.getElementById("catBackBtn").addEventListener("click", closeCategory);
+      window.addEventListener("hashchange", routeFromHash);
       document.getElementById("aboutBackBtn").addEventListener("click", closeAbout);
       document.getElementById("footAboutBtn").addEventListener("click", openAbout);
       document.getElementById("heroPrev").addEventListener("click", function(){ goSlide(currentSlide-1); });
@@ -1468,8 +1588,8 @@
       document.getElementById("dBack2").addEventListener("click", closeDetail);
       document.getElementById("logoHome").addEventListener("click", function(e){
         e.preventDefault();
-        if (currentProduct) closeDetail();
-        closeAbout();
+        if (currentProduct){ stopPhotoTimer(); currentProduct = null; }
+        navigateTo("#/", false);
         window.scrollTo({top:0, behavior: reduced?"auto":"smooth"});
       });
       document.getElementById("dFav").addEventListener("click", function(){ if (currentProduct) toggleFav(currentProduct.id); });
@@ -1479,12 +1599,13 @@
       document.getElementById("cartClose").addEventListener("click", closeCart);
       document.getElementById("cartOverlay").addEventListener("click", closeCart);
       document.getElementById("cartClear").addEventListener("click", function(){ cart = []; saveCart(); renderCart(); renderCartCount(); });
-      document.getElementById("cartEmptyBtn").addEventListener("click", function(){ closeCart(); if (currentProduct) closeDetail(); document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"}); });
+      document.getElementById("cartEmptyBtn").addEventListener("click", function(){ closeCart(); if (currentProduct) closeDetail(); else if (currentCat) document.getElementById("catView").scrollIntoView({behavior: reduced?"auto":"smooth"}); else document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"}); });
       document.getElementById("dAddCart").addEventListener("click", addToCart);
       document.getElementById("themeBtn").addEventListener("click", toggleTheme);
       document.getElementById("favBtn").addEventListener("click", function(){
         if (currentProduct) closeDetail();
-        document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"});
+        else if (currentCat) document.getElementById("catView").scrollIntoView({behavior: reduced?"auto":"smooth"});
+        else document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"});
       });
       document.getElementById("hero").addEventListener("mouseenter", function(){ if (slideTimer) clearInterval(slideTimer); });
       document.getElementById("hero").addEventListener("mouseleave", restartAutoplay);
@@ -1492,7 +1613,7 @@
       document.getElementById("dNext").addEventListener("click", function(){ showPhoto(currentPhoto+1); restartPhotoTimer(); });
       document.querySelector(".detail .gallery").addEventListener("mouseenter", stopPhotoTimer);
       document.querySelector(".detail .gallery").addEventListener("mouseleave", restartPhotoTimer);
-      document.addEventListener("keydown", function(e){ if (e.key==="Escape"){ if (cartIsOpen()) closeCart(); else if (currentProduct) closeDetail(); else if (!document.getElementById("aboutView").hidden) closeAbout(); } });
+      document.addEventListener("keydown", function(e){ if (e.key==="Escape"){ if (cartIsOpen()) closeCart(); else if (currentProduct) closeDetail(); else if (!document.getElementById("aboutView").hidden) closeAbout(); else if (currentCat) closeCategory(); } });
 
       updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); updateWaFloat();
     </script>
