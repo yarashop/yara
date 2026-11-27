@@ -1,29 +1,6 @@
 {
   "products": [
     {
-      "id": "baskets-blanches",
-      "name": {
-        "fr": "TEST - Baskets blanches",
-        "ar": "TEST - سبرديلة بيضاء",
-        "en": "TEST - White sneakers"
-      },
-      "price": 399,
-      "size": "42",
-      "cat": "chaussures",
-      "img": "/images/products/test-baskets-blanches.jpg",
-      "desc": {
-        "fr": "Baskets basses blanches, tige souple et semelle confortable antidérapante. Le modèle qui va avec tout.",
-        "ar": "سبرديلة بيضاء منخفضة، خامة مرنة ونعل مريح مضاد للانزلاق. الموديل الذي يناسب كل شيء.",
-        "en": "White low-top sneakers with a flexible upper and comfortable non-slip sole. The pair that goes with everything."
-      },
-      "alt": {
-        "fr": "Paire de baskets blanches basses",
-        "ar": "زوج سبرديلة بيضاء منخفضة",
-        "en": "Pair of white low-top sneakers"
-      },
-      "published": true
-    },
-    {
       "id": "veste-jean",
       "name": {
         "fr": "TEST - Veste en jean",
