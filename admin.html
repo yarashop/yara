@@ -44,7 +44,13 @@
   .hidden-product { opacity: 0.55; }
   ol.steps { font-size: 14px; line-height: 1.7; padding-left: 20px; margin: 0; }
   code { background: #eee; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
-  #photoPreview { max-width: 160px; margin-top: 8px; border-radius: 6px; display: none; }
+  #photoPreviews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  #photoPreviews img { width: 72px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+  .size-group { font-size: 13px; font-weight: bold; color: #555; margin: 10px 0 0; }
+  .size-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .size-chip { border: 2px solid #bbb; background: #fff; border-radius: 6px; padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; width: auto; }
+  .size-chip.on { background: #111214; color: #fff; border-color: #111214; }
+  #sizeSelected, #catSelected { font-size: 14px; font-weight: bold; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -86,20 +92,25 @@
     <input type="text" id="pName" placeholder="ex : T-shirt blanc" autocomplete="off">
     <label for="pPrice">Prix (DH) *</label>
     <input type="number" id="pPrice" placeholder="ex : 150" min="0">
-    <label for="pSize">Taille</label>
-    <input type="text" id="pSize" placeholder="ex : M  ou  32  ou  42" autocomplete="off">
-    <label for="pCat">Catégorie</label>
-    <select id="pCat">
-      <option value="hommes">Hommes</option>
-      <option value="traditionnel">Traditionnel</option>
-      <option value="chaussures">Chaussures</option>
-      <option value="accessoires">Accessoires</option>
-    </select>
+    <label>Tailles * (choisissez une ou plusieurs)</label>
+    <p class="size-group">Vêtements :</p>
+    <div class="size-chips" id="sizeChipsClothes"></div>
+    <p class="size-group">Chaussures :</p>
+    <div class="size-chips" id="sizeChipsShoes"></div>
+    <label for="pSizeCustom">Tailles personnalisées (séparées par des virgules)</label>
+    <input type="text" id="pSizeCustom" placeholder="ex : 32, 34  ou  Unique" autocomplete="off">
+    <p id="sizeSelected">Aucune taille choisie.</p>
+    <label>Catégories * (choisissez une ou plusieurs)</label>
+    <div class="size-chips" id="catChips"></div>
+    <label for="pCatCustom">Catégorie personnalisée (séparées par des virgules)</label>
+    <input type="text" id="pCatCustom" placeholder="ex : sport" autocomplete="off">
+    <p class="hint">Une catégorie personnalisée apparaîtra aussi comme filtre dans la boutique.</p>
+    <p id="catSelected">Aucune catégorie choisie.</p>
     <label for="pDesc">Description</label>
     <textarea id="pDesc" placeholder="ex : T-shirt blanc en coton, coupe regular."></textarea>
-    <label for="pPhoto">Photo du produit * (JPG ou PNG)</label>
-    <input type="file" id="pPhoto" accept="image/jpeg,image/png">
-    <img id="photoPreview" alt="Aperçu de la photo">
+    <label for="pPhoto">Photos du produit * (JPG, PNG, WebP… — plusieurs photos possibles)</label>
+    <input type="file" id="pPhoto" accept="image/*" multiple>
+    <div id="photoPreviews"></div>
     <button class="btn-red" id="addBtn" type="button">Ajouter le produit</button>
   </section>
 
@@ -159,6 +170,16 @@
       r.onerror = function () { reject(new Error("Impossible de lire la photo.")); };
       r.readAsDataURL(file);
     });
+  }
+  // Extension réelle du fichier (jpg, png, webp, gif, avif…), sinon .jpg
+  function fileExt(file) {
+    var m = (file.name || "").match(/\.([a-zA-Z0-9]+)$/);
+    if (m) return "." + m[1].toLowerCase();
+    if (file.type === "image/png") return ".png";
+    if (file.type === "image/webp") return ".webp";
+    if (file.type === "image/gif") return ".gif";
+    if (file.type === "image/avif") return ".avif";
+    return ".jpg";
   }
   function b64decode(str) {
     return decodeURIComponent(escape(atob(str.replace(/\n/g, ""))));
@@ -248,38 +269,145 @@
     }
   });
 
-  // ---------- aperçu photo ----------
+  // ---------- aperçu des photos (une vignette par photo choisie) ----------
   $("pPhoto").addEventListener("change", function () {
-    var file = $("pPhoto").files[0];
-    var prev = $("photoPreview");
-    if (!file) { prev.style.display = "none"; return; }
-    var r = new FileReader();
-    r.onload = function () { prev.src = String(r.result); prev.style.display = "block"; };
-    r.readAsDataURL(file);
+    var files = $("pPhoto").files;
+    var box = $("photoPreviews");
+    box.innerHTML = "";
+    Array.prototype.forEach.call(files, function (file) {
+      if (file.type.indexOf("image/") !== 0) return;
+      var r = new FileReader();
+      r.onload = function () {
+        var im = document.createElement("img");
+        im.src = String(r.result);
+        im.alt = file.name;
+        box.appendChild(im);
+      };
+      r.readAsDataURL(file);
+    });
   });
+
+  // ---------- choix des tailles (plusieurs possibles) ----------
+  var SIZE_PRESETS = ["XS", "S", "M", "L", "XL", "XXL"];
+  var SHOE_PRESETS = ["40", "41", "42", "43", "44", "45", "46"];
+  var selectedSizes = [];
+  function buildSizeChips(containerId, presets) {
+    var box = $(containerId);
+    presets.forEach(function (sz) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "size-chip";
+      b.textContent = sz;
+      b.addEventListener("click", function () {
+        var i = selectedSizes.indexOf(sz);
+        if (i === -1) selectedSizes.push(sz); else selectedSizes.splice(i, 1);
+        renderSizeChips();
+        updateSizeSelected();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderSizeChips() {
+    [["sizeChipsClothes", SIZE_PRESETS], ["sizeChipsShoes", SHOE_PRESETS]].forEach(function (pair) {
+      var btns = $(pair[0]).querySelectorAll(".size-chip");
+      Array.prototype.forEach.call(btns, function (b) {
+        b.classList.toggle("on", selectedSizes.indexOf(b.textContent) !== -1);
+      });
+    });
+  }
+  // Tailles dans l'ordre affiché (vêtements puis chaussures), puis les tailles personnalisées
+  function getSizes() {
+    var order = SIZE_PRESETS.concat(SHOE_PRESETS);
+    var list = selectedSizes.slice().sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
+    var custom = ($("pSizeCustom").value || "").split(",").map(function (x) { return x.trim(); }).filter(function (x) { return !!x; });
+    custom.forEach(function (c) { if (list.indexOf(c) === -1) list.push(c); });
+    return list;
+  }
+  function updateSizeSelected() {
+    var list = getSizes();
+    $("sizeSelected").textContent = list.length ? "Tailles choisies : " + list.join(" · ") : "Aucune taille choisie.";
+  }
+  buildSizeChips("sizeChipsClothes", SIZE_PRESETS);
+  buildSizeChips("sizeChipsShoes", SHOE_PRESETS);
+  $("pSizeCustom").addEventListener("input", updateSizeSelected);
+
+  // ---------- choix des catégories (plusieurs possibles) ----------
+  var CAT_PRESETS = [
+    { slug: "hommes", label: "Hommes" },
+    { slug: "traditionnel", label: "Traditionnel" },
+    { slug: "chaussures", label: "Chaussures" },
+    { slug: "accessoires", label: "Accessoires" }
+  ];
+  var selectedCats = [];
+  function buildCatChips() {
+    var box = $("catChips");
+    CAT_PRESETS.forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "size-chip";
+      b.textContent = c.label;
+      b.setAttribute("data-cat", c.slug);
+      b.addEventListener("click", function () {
+        var i = selectedCats.indexOf(c.slug);
+        if (i === -1) selectedCats.push(c.slug); else selectedCats.splice(i, 1);
+        renderCatChips();
+        updateCatSelected();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderCatChips() {
+    var btns = $("catChips").querySelectorAll(".size-chip");
+    Array.prototype.forEach.call(btns, function (b) {
+      b.classList.toggle("on", selectedCats.indexOf(b.getAttribute("data-cat")) !== -1);
+    });
+  }
+  function catDisplayName(slug) {
+    for (var i = 0; i < CAT_PRESETS.length; i++) if (CAT_PRESETS[i].slug === slug) return CAT_PRESETS[i].label;
+    return slug.charAt(0).toUpperCase() + slug.slice(1);
+  }
+  // Catégories dans l'ordre affiché, puis les catégories personnalisées
+  function getCats() {
+    var order = CAT_PRESETS.map(function (c) { return c.slug; });
+    var list = selectedCats.slice().sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
+    var custom = ($("pCatCustom").value || "").split(",").map(function (x) { return x.trim(); }).filter(function (x) { return !!x; }).map(function (x) { return slugify(x); }).filter(function (x) { return !!x; });
+    custom.forEach(function (c) { if (list.indexOf(c) === -1) list.push(c); });
+    return list;
+  }
+  function updateCatSelected() {
+    var list = getCats();
+    $("catSelected").textContent = list.length ? "Catégories choisies : " + list.map(catDisplayName).join(" · ") : "Aucune catégorie choisie.";
+  }
+  buildCatChips();
+  $("pCatCustom").addEventListener("input", updateCatSelected);
 
   // ---------- ajouter un produit ----------
   $("addBtn").addEventListener("click", async function () {
     var cfg = checkConfig(); if (!cfg) return;
     var name = ($("pName").value || "").trim();
     var price = Number($("pPrice").value);
-    var size = ($("pSize").value || "").trim();
-    var cat = $("pCat").value;
+    var sizes = getSizes();
+    var cats = getCats();
     var desc = ($("pDesc").value || "").trim();
-    var file = $("pPhoto").files[0];
+    var files = Array.prototype.slice.call($("pPhoto").files);
     if (!name) { showMsg("Indiquez le nom du produit.", "err"); return; }
     if (!price || price <= 0) { showMsg("Indiquez un prix en DH (nombre supérieur à 0).", "err"); return; }
-    if (!file) { showMsg("Choisissez une photo du produit.", "err"); return; }
-    if (file.type !== "image/jpeg" && file.type !== "image/png") {
-      showMsg("La photo doit être un fichier JPG ou PNG.", "err"); return;
+    if (!sizes.length) { showMsg("Choisissez au moins une taille.", "err"); return; }
+    if (!cats.length) { showMsg("Choisissez au moins une catégorie.", "err"); return; }
+    if (!files.length) { showMsg("Choisissez au moins une photo du produit.", "err"); return; }
+    var badFiles = files.filter(function (f) { return f.type.indexOf("image/") !== 0; });
+    if (badFiles.length) {
+      showMsg("Tous les fichiers choisis doivent être des images (JPG, PNG, WebP…).", "err"); return;
     }
     var btn = $("addBtn");
     btn.disabled = true; btn.textContent = "Ajout en cours…";
-    showMsg("Envoi de la photo, puis ajout du produit…", "info");
+    showMsg("Envoi des photos (" + files.length + "), puis ajout du produit…", "info");
     try {
-      var ext = file.type === "image/png" ? ".png" : ".jpg";
       var slug = slugify(name) + "-" + Date.now().toString(36);
-      var imgPath = await uploadPhoto(cfg, file, slug + ext);
+      var imgPaths = [];
+      for (var i = 0; i < files.length; i++) {
+        imgPaths.push(await uploadPhoto(cfg, files[i], slug + "-" + (i + 1) + fileExt(files[i])));
+      }
       var current = await getProductsFile(cfg);
       if (current.products.some(function (p) { return p.id === slug; })) {
         throw new Error("Un produit avec ce nom existe déjà. Changez le nom.");
@@ -288,18 +416,23 @@
         id: slug,
         name: { fr: name, ar: name, en: name },
         price: price,
-        size: size,
-        cat: cat,
-        img: imgPath,
+        size: sizes[0],
+        sizes: sizes,
+        cat: cats[0],
+        cats: cats,
+        img: imgPaths[0],
+        images: imgPaths,
         desc: { fr: desc, ar: desc, en: desc },
         alt: { fr: name, ar: name, en: name },
         published: true
       };
       current.products.push(product);
       await saveProductsFile(cfg, current.products, current.sha, "Ajouter le produit : " + name);
-      showMsg("Produit ajouté ! Le site se met à jour dans 1-2 minutes.", "ok");
-      $("pName").value = ""; $("pPrice").value = ""; $("pSize").value = ""; $("pDesc").value = "";
-      $("pPhoto").value = ""; $("photoPreview").style.display = "none";
+      showMsg("Produit ajouté avec " + imgPaths.length + (imgPaths.length > 1 ? " photos" : " photo") + " ! Le site se met à jour dans 1-2 minutes.", "ok");
+      $("pName").value = ""; $("pPrice").value = ""; $("pDesc").value = "";
+      $("pSizeCustom").value = ""; selectedSizes = []; renderSizeChips(); updateSizeSelected();
+      $("pCatCustom").value = ""; selectedCats = []; renderCatChips(); updateCatSelected();
+      $("pPhoto").value = ""; $("photoPreviews").innerHTML = "";
       loadList();
     } catch (e) {
       showMsg(e.message, "err");
@@ -338,7 +471,9 @@
           title.appendChild(tag);
         }
         var meta = document.createElement("span");
-        meta.textContent = (p.price || 0) + " DH" + (p.size ? "  •  Taille " + p.size : "") + "  •  " + (p.cat || "");
+        var sizesText = (p.sizes && p.sizes.length) ? p.sizes.join(" · ") : (p.size || "");
+        var catsText = (p.cats && p.cats.length) ? p.cats.map(catDisplayName).join(" · ") : (p.cat ? catDisplayName(p.cat) : "");
+        meta.textContent = (p.price || 0) + " DH" + (sizesText ? "  •  Tailles " + sizesText : "") + (catsText ? "  •  " + catsText : "");
         info.appendChild(title); info.appendChild(meta);
         var actions = document.createElement("div");
         actions.className = "actions";
