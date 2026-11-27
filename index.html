@@ -621,13 +621,17 @@
         var v = Number(n) || 0;
         return v.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}) + " MAD";
       }
-      /* Discount per product: 10%, 25% or 50%, chosen deterministically from a
-         hash of the product id — the same product always shows the same %. */
+      /* Discount per product: 10%, 25% or 50%. The % rotates by itself every
+         day: the UTC day number shifts the pick, so on any given day the
+         products show a mix of 10/25/50, and each product cycles
+         10 → 25 → 50 → 10 over 3 days. Same product + same day = same %
+         on every load. The selling price is never changed. */
       var PROMO_PCTS = [10, 25, 50];
       function promoPct(p){
         var h = 0, s = String((p && p.id) || "");
         for (var i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) >>> 0; }
-        return PROMO_PCTS[h % PROMO_PCTS.length];
+        var day = Math.floor(Date.now() / 86400000);
+        return PROMO_PCTS[(h + day) % PROMO_PCTS.length];
       }
       function promoOldPrice(p){
         var pct = promoPct(p);
