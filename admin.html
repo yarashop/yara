@@ -18,7 +18,7 @@
   input[type="text"], input[type="password"], input[type="number"], select, textarea {
     width: 100%; padding: 10px; font-size: 15px; border: 1px solid #bbb; border-radius: 6px;
   }
-  textarea { min-height: 70px; resize: vertical; }
+  textarea { min-height: 100px; resize: vertical; }
   input[type="file"] { font-size: 14px; }
   .hint { font-size: 13px; color: #555; margin-top: 4px; }
   button { cursor: pointer; border: none; border-radius: 6px; font-size: 15px; padding: 11px 18px; }
@@ -50,7 +50,10 @@
   .size-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
   .size-chip { border: 2px solid #bbb; background: #fff; border-radius: 6px; padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; width: auto; }
   .size-chip.on { background: #111214; color: #fff; border-color: #111214; }
-  #sizeSelected, #catSelected { font-size: 14px; font-weight: bold; margin-top: 8px; }
+  #sizeSelected, #catSelected, #colorSelected { font-size: 14px; font-weight: bold; margin-top: 8px; }
+  .color-chip { display: inline-flex; align-items: center; gap: 7px; }
+  .color-dot { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,.25); flex: none; }
+  .list-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid #bbb; vertical-align: -1px; }
 </style>
 </head>
 <body>
@@ -106,8 +109,14 @@
     <input type="text" id="pCatCustom" placeholder="ex : sport" autocomplete="off">
     <p class="hint">Une catégorie personnalisée apparaîtra aussi comme filtre dans la boutique.</p>
     <p id="catSelected">Aucune catégorie choisie.</p>
+    <label>Couleurs * (choisissez une ou plusieurs)</label>
+    <div class="size-chips" id="colorChips"></div>
+    <label for="pColorCustom">Couleur personnalisée (séparées par des virgules)</label>
+    <input type="text" id="pColorCustom" placeholder="ex : Kaki, Bordeaux" autocomplete="off">
+    <p class="hint">Les couleurs choisies apparaîtront comme pastilles sur la page du produit.</p>
+    <p id="colorSelected">Aucune couleur choisie.</p>
     <label for="pDesc">Description</label>
-    <textarea id="pDesc" placeholder="ex : T-shirt blanc en coton, coupe regular."></textarea>
+    <textarea id="pDesc" rows="4" placeholder="ex : T-shirt blanc en coton, coupe regular.\nUn détail par ligne — les retours à la ligne sont gardés sur la page du produit."></textarea>
     <label for="pPhoto">Photos du produit * (JPG, PNG, WebP… — plusieurs photos possibles)</label>
     <input type="file" id="pPhoto" accept="image/*" multiple>
     <div id="photoPreviews"></div>
@@ -381,6 +390,80 @@
   buildCatChips();
   $("pCatCustom").addEventListener("input", updateCatSelected);
 
+  // ---------- choix des couleurs (plusieurs possibles) ----------
+  var COLOR_PRESETS = [
+    { name: "Noir", hex: "#111214" },
+    { name: "Blanc", hex: "#ffffff" },
+    { name: "Bleu", hex: "#1e40af" },
+    { name: "Bleu clair", hex: "#60a5fa" },
+    { name: "Rouge", hex: "#c8102e" },
+    { name: "Vert", hex: "#15803d" },
+    { name: "Marron", hex: "#7c4a21" },
+    { name: "Beige", hex: "#d6c9a8" },
+    { name: "Gris", hex: "#6b7280" },
+    { name: "Jaune", hex: "#eab308" },
+    { name: "Rose", hex: "#ec4899" },
+    { name: "Orange", hex: "#ea580c" }
+  ];
+  var COLOR_GREY = "#6b7280";
+  var selectedColors = [];
+  function findPresetColor(name) {
+    for (var i = 0; i < COLOR_PRESETS.length; i++) {
+      if (COLOR_PRESETS[i].name.toLowerCase() === String(name).toLowerCase()) return COLOR_PRESETS[i];
+    }
+    return null;
+  }
+  function buildColorChips() {
+    var box = $("colorChips");
+    COLOR_PRESETS.forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "size-chip color-chip";
+      b.setAttribute("data-color", c.name);
+      var dot = document.createElement("span");
+      dot.className = "color-dot";
+      dot.style.background = c.hex;
+      b.appendChild(dot);
+      b.appendChild(document.createTextNode(c.name));
+      b.addEventListener("click", function () {
+        var i = selectedColors.indexOf(c.name);
+        if (i === -1) selectedColors.push(c.name); else selectedColors.splice(i, 1);
+        renderColorChips();
+        updateColorSelected();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderColorChips() {
+    var btns = $("colorChips").querySelectorAll(".color-chip");
+    Array.prototype.forEach.call(btns, function (b) {
+      b.classList.toggle("on", selectedColors.indexOf(b.getAttribute("data-color")) !== -1);
+    });
+  }
+  // Couleurs dans l'ordre affiché, puis les couleurs personnalisées (sans doublon, insensible à la casse)
+  function getColors() {
+    var order = COLOR_PRESETS.map(function (c) { return c.name; });
+    var names = selectedColors.slice().sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
+    var custom = ($("pColorCustom").value || "").split(",").map(function (x) { return x.trim(); }).filter(function (x) { return !!x; });
+    custom.forEach(function (c) {
+      var exists = names.some(function (n) { return n.toLowerCase() === c.toLowerCase(); });
+      if (!exists) {
+        var preset = findPresetColor(c);
+        names.push(preset ? preset.name : c);
+      }
+    });
+    return names.map(function (n) {
+      var preset = findPresetColor(n);
+      return { name: n, hex: preset ? preset.hex : COLOR_GREY };
+    });
+  }
+  function updateColorSelected() {
+    var list = getColors();
+    $("colorSelected").textContent = list.length ? "Couleurs choisies : " + list.map(function (c) { return c.name; }).join(" · ") : "Aucune couleur choisie.";
+  }
+  buildColorChips();
+  $("pColorCustom").addEventListener("input", updateColorSelected);
+
   // ---------- ajouter un produit ----------
   $("addBtn").addEventListener("click", async function () {
     var cfg = checkConfig(); if (!cfg) return;
@@ -388,12 +471,14 @@
     var price = Number($("pPrice").value);
     var sizes = getSizes();
     var cats = getCats();
+    var colors = getColors();
     var desc = ($("pDesc").value || "").trim();
     var files = Array.prototype.slice.call($("pPhoto").files);
     if (!name) { showMsg("Indiquez le nom du produit.", "err"); return; }
     if (!price || price <= 0) { showMsg("Indiquez un prix en DH (nombre supérieur à 0).", "err"); return; }
     if (!sizes.length) { showMsg("Choisissez au moins une taille.", "err"); return; }
     if (!cats.length) { showMsg("Choisissez au moins une catégorie.", "err"); return; }
+    if (!colors.length) { showMsg("Choisissez au moins une couleur.", "err"); return; }
     if (!files.length) { showMsg("Choisissez au moins une photo du produit.", "err"); return; }
     var badFiles = files.filter(function (f) { return f.type.indexOf("image/") !== 0; });
     if (badFiles.length) {
@@ -420,6 +505,8 @@
         sizes: sizes,
         cat: cats[0],
         cats: cats,
+        color: colors[0].name,
+        colors: colors,
         img: imgPaths[0],
         images: imgPaths,
         desc: { fr: desc, ar: desc, en: desc },
@@ -432,6 +519,7 @@
       $("pName").value = ""; $("pPrice").value = ""; $("pDesc").value = "";
       $("pSizeCustom").value = ""; selectedSizes = []; renderSizeChips(); updateSizeSelected();
       $("pCatCustom").value = ""; selectedCats = []; renderCatChips(); updateCatSelected();
+      $("pColorCustom").value = ""; selectedColors = []; renderColorChips(); updateColorSelected();
       $("pPhoto").value = ""; $("photoPreviews").innerHTML = "";
       loadList();
     } catch (e) {
@@ -440,6 +528,19 @@
       btn.disabled = false; btn.textContent = "Ajouter le produit";
     }
   });
+
+  // Couleurs d'un produit, normalisées en [{name, hex}] (anciens produits : "color" simple ou aucune couleur)
+  function adminColors(p) {
+    if (Array.isArray(p.colors) && p.colors.length) {
+      return p.colors.map(function (c) {
+        return (c && typeof c === "object")
+          ? { name: String(c.name || ""), hex: String(c.hex || COLOR_GREY) }
+          : { name: String(c || ""), hex: COLOR_GREY };
+      }).filter(function (c) { return !!c.name; });
+    }
+    if (p.color) return [{ name: String(p.color), hex: COLOR_GREY }];
+    return [];
+  }
 
   // ---------- liste des produits ----------
   function rawImageUrl(cfg, imgPath) {
@@ -473,7 +574,19 @@
         var meta = document.createElement("span");
         var sizesText = (p.sizes && p.sizes.length) ? p.sizes.join(" · ") : (p.size || "");
         var catsText = (p.cats && p.cats.length) ? p.cats.map(catDisplayName).join(" · ") : (p.cat ? catDisplayName(p.cat) : "");
+        var colorsList = adminColors(p);
         meta.textContent = (p.price || 0) + " DH" + (sizesText ? "  •  Tailles " + sizesText : "") + (catsText ? "  •  " + catsText : "");
+        if (colorsList.length) {
+          meta.appendChild(document.createTextNode("  •  "));
+          colorsList.forEach(function (c, idx) {
+            var dot = document.createElement("span");
+            dot.className = "list-dot";
+            dot.style.background = c.hex;
+            dot.title = c.name;
+            meta.appendChild(dot);
+            meta.appendChild(document.createTextNode(" " + c.name + (idx < colorsList.length - 1 ? " · " : "")));
+          });
+        }
         info.appendChild(title); info.appendChild(meta);
         var actions = document.createElement("div");
         actions.className = "actions";
