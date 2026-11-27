@@ -50,6 +50,63 @@
         "en": "SOUTHBLUE Manteau Bouffant À Col Montant Regular Fit Pour Homme"
       },
       "published": true
+    },
+    {
+      "id": "eddyw26-sw-sweat-shirt-mwyksyvh",
+      "name": {
+        "fr": "EddyW26-Sw Sweat-shirt",
+        "ar": "EddyW26-Sw Sweat-shirt",
+        "en": "EddyW26-Sw Sweat-shirt"
+      },
+      "price": 329,
+      "size": "S",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "cat": "hommes",
+      "cats": [
+        "hommes",
+        "traditionnel"
+      ],
+      "color": "Grey Marl Light Go",
+      "colors": [
+        {
+          "name": "Grey Marl Light Go",
+          "hex": "#6b7280"
+        },
+        {
+          "name": "Dark Beige",
+          "hex": "#6b7280"
+        },
+        {
+          "name": "Peacoat",
+          "hex": "#6b7280"
+        }
+      ],
+      "img": "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-1.webp",
+      "images": [
+        "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-1.webp",
+        "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-2.webp",
+        "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-3.webp",
+        "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-4.webp",
+        "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-5.webp",
+        "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-6.webp",
+        "/images/products/eddyw26-sw-sweat-shirt-mwyksyvh-7.webp"
+      ],
+      "desc": {
+        "fr": "Sweat zippé à capuche pour homme – EDDY W26\n\nConfectionné en molleton gratté à l’intérieur doux, le sweat EDDY W26 de Lee Cooper se porte ouvert sur un t-shirt ou zippé jusqu’au col. Sa capuche s’ajuste à l’aide de cordons ronds tressés. Une étiquette discrète orne la poche kangourou, divisée par un zip ton sur ton à tirette Lee Cooper. Les poignets et la base sont finis en bord-côte.\n\nColoris — Gris chiné, beige foncé et bleu marine.\nComposition — 58 % coton, 42 % polyester.",
+        "ar": "Sweat zippé à capuche pour homme – EDDY W26\n\nConfectionné en molleton gratté à l’intérieur doux, le sweat EDDY W26 de Lee Cooper se porte ouvert sur un t-shirt ou zippé jusqu’au col. Sa capuche s’ajuste à l’aide de cordons ronds tressés. Une étiquette discrète orne la poche kangourou, divisée par un zip ton sur ton à tirette Lee Cooper. Les poignets et la base sont finis en bord-côte.\n\nColoris — Gris chiné, beige foncé et bleu marine.\nComposition — 58 % coton, 42 % polyester.",
+        "en": "Sweat zippé à capuche pour homme – EDDY W26\n\nConfectionné en molleton gratté à l’intérieur doux, le sweat EDDY W26 de Lee Cooper se porte ouvert sur un t-shirt ou zippé jusqu’au col. Sa capuche s’ajuste à l’aide de cordons ronds tressés. Une étiquette discrète orne la poche kangourou, divisée par un zip ton sur ton à tirette Lee Cooper. Les poignets et la base sont finis en bord-côte.\n\nColoris — Gris chiné, beige foncé et bleu marine.\nComposition — 58 % coton, 42 % polyester."
+      },
+      "alt": {
+        "fr": "EddyW26-Sw Sweat-shirt",
+        "ar": "EddyW26-Sw Sweat-shirt",
+        "en": "EddyW26-Sw Sweat-shirt"
+      },
+      "published": true
     }
   ]
 }
