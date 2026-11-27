@@ -1,29 +1,6 @@
 {
   "products": [
     {
-      "id": "veste-cuir",
-      "name": {
-        "fr": "TEST - Veste en cuir",
-        "ar": "TEST - جاكيت جلد",
-        "en": "TEST - Leather jacket"
-      },
-      "price": 899,
-      "size": "L",
-      "cat": "hommes",
-      "img": "/images/products/test-veste-en-cuir.jpg",
-      "desc": {
-        "fr": "Veste biker en cuir noir, col à pressions, zip central et poches zippées. Doublure intérieure confortable.",
-        "ar": "جاكيت بايكر من الجلد الأسود، ياقة بأزرار ضغط وسحاب أمامي وجيوب بسحاب. بطانة داخلية مريحة.",
-        "en": "Black leather biker jacket with snap collar, front zip and zipped pockets. Comfortable inner lining."
-      },
-      "alt": {
-        "fr": "Homme portant une veste en cuir noir",
-        "ar": "رجل يرتدي جاكيت جلد أسود",
-        "en": "Man wearing a black leather jacket"
-      },
-      "published": true
-    },
-    {
       "id": "djellaba",
       "name": {
         "fr": "TEST - Djellaba traditionnelle",
