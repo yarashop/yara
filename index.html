@@ -139,6 +139,29 @@
       .search svg{width:17px;height:17px;color:var(--ink-2);flex:none}
       .search input{border:0;outline:0;background:none;color:var(--ink);width:170px;min-height:2.4rem}
       @media (max-width:640px){.search{margin-inline-start:0;width:100%}.search input{width:100%}}
+
+      /* ---------- Filters (size / color / price) ---------- */
+      .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 20px}
+      .filters-label{font-weight:800;font-size:.9rem;color:var(--ink-2)}
+      .filters select{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:9px 14px;font-weight:700;font-size:.88rem;cursor:pointer;max-width:100%}
+      .filters select:focus{outline:2px solid var(--accent);outline-offset:1px}
+      .filter-clear{border:1px solid var(--line);background:transparent;color:var(--ink-2);border-radius:999px;padding:9px 16px;font-weight:700;font-size:.88rem;cursor:pointer}
+      .filter-clear:hover{color:var(--accent);border-color:var(--accent)}
+      .filter-clear[hidden]{display:none}
+
+      /* ---------- About view ---------- */
+      #aboutView{padding:28px 0 70px}
+      .about-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:clamp(22px,4vw,40px);max-width:820px}
+      .about-card p{color:var(--ink-2);line-height:1.7;font-size:1.02rem;margin:0 0 16px}
+      .about-card .specs{margin:22px 0}
+      .about-card .whatsapp{justify-content:center;margin-top:6px}
+
+      /* ---------- Floating WhatsApp button ---------- */
+      .wa-float{position:fixed;bottom:20px;inset-inline-end:20px;z-index:70;width:56px;height:56px;border-radius:50%;background:#25d366;color:#fff;display:grid;place-items:center;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.28);animation:waPulse 2.4s ease-out infinite}
+      .wa-float svg{width:30px;height:30px}
+      .wa-float:hover{background:#1da851}
+      @keyframes waPulse{0%{box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 0 rgba(37,211,102,.45)}70%{box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 0 rgba(37,211,102,0)}}
+      @media (prefers-reduced-motion: reduce){.wa-float{animation:none}}
       .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 16px}
       @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
       @media (max-width:430px){.grid{grid-template-columns:1fr}}
@@ -406,6 +429,13 @@
             <input type="search" id="searchInput" data-i18n-ph="searchPh" placeholder="Rechercher un article…" />
           </label>
         </div>
+        <div class="filters" id="filters">
+          <span class="filters-label" data-i18n="filterTitle">Filtres</span>
+          <select id="filterSize" aria-label="Taille"></select>
+          <select id="filterColor" aria-label="Couleur"></select>
+          <select id="filterPrice" aria-label="Prix"></select>
+          <button class="filter-clear" id="clearFilters" type="button" hidden><span data-i18n="clearFilters">Effacer les filtres</span></button>
+        </div>
         <div class="grid" id="grid"></div>
         <p class="empty" id="emptyMsg" hidden data-i18n="empty">Aucun article ne correspond à votre recherche.</p>
       </div></section>
@@ -426,6 +456,31 @@
         <section class="services" id="services"></section>
       </div>
     </main>
+
+    <!-- ============ ABOUT VIEW ============ -->
+    <main id="aboutView" hidden><div class="wrap">
+      <button class="back-btn" id="aboutBackBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        <span data-i18n="back">Retour à la boutique</span>
+      </button>
+      <section class="about">
+        <div class="sec-head"><div>
+          <h2 data-i18n="aboutTitle">À propos de YaraShop</h2>
+          <p data-i18n="aboutSub">Une boutique homme, 100% neuve.</p>
+        </div></div>
+        <div class="about-card">
+          <p data-i18n="aboutP1">YaraShop est une boutique en ligne pour hommes : vêtements, tenues traditionnelles, chaussures et accessoires. Tous nos articles sont neufs, jamais portés.</p>
+          <p data-i18n="aboutP2">Commandez en quelques clics et payez à la livraison, partout au Maroc. Une question sur une taille ou un article ? Contactez-nous directement sur WhatsApp, on vous répond avec plaisir.</p>
+          <div class="specs">
+            <div class="row"><span data-i18n="aboutDelivery">Livraison</span><span data-i18n="help2">Livraison partout au Maroc</span></div>
+            <div class="row"><span data-i18n="aboutPayment">Paiement</span><span data-i18n="help1">Paiement à la livraison</span></div>
+            <div class="row"><span data-i18n="aboutExchange">Échange</span><span data-i18n="help3">Échange sous 7 jours</span></div>
+            <div class="row"><span data-i18n="aboutContact">Contact</span><span><a href="https://wa.me/212600457896" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700">WhatsApp : <span dir="ltr">+212 600 45 78 96</span></a></span></div>
+          </div>
+          <a class="btn whatsapp" id="aboutWhats" href="https://wa.me/212600457896" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8.5 8.2c.3-.7 1.3-.8 1.7-.1l.5.9c.2.4.1.9-.2 1.2l-.4.4a5.5 5.5 0 0 0 2.5 2.5l.4-.4.c.3-.3.8-.4 1.2-.2l.9.5c.7.4.6 1.4-.1 1.7-2.9 1.3-8.3-4.1-7-7Z"/></svg><span data-i18n="aboutCta">Contacter sur WhatsApp</span></a>
+        </div>
+      </section>
+    </div></main>
 
     <!-- ============ DETAIL VIEW ============ -->
     <main id="detailView"><div class="wrap">
@@ -497,6 +552,7 @@
             <li data-i18n="help1">Paiement à la livraison</li>
             <li data-i18n="help2">Livraison partout au Maroc</li>
             <li data-i18n="help3">Échange sous 7 jours</li>
+            <li><button type="button" id="footAboutBtn" data-i18n="aboutLink">À propos</button></li>
             <li><a class="wa-link" id="footWhats" href="https://wa.me/212600457896" target="_blank" rel="noopener">WhatsApp : <span dir="ltr">+212 600 45 78 96</span></a></li>
           </ul>
         </div>
@@ -529,6 +585,7 @@
         <button class="ghost-btn" type="button" id="cartClear" data-i18n="cartClear">Vider le panier</button>
       </div>
     </aside>
+    <a class="wa-float" id="waFloat" href="https://wa.me/212600457896" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8.5 8.2c.3-.7 1.3-.8 1.7-.1l.5.9c.2.4.1.9-.2 1.2l-.4.4a5.5 5.5 0 0 0 2.5 2.5l.4-.4.c.3-.3.8-.4 1.2-.2l.9.5c.7.4.6 1.4-.1 1.7-2.9 1.3-8.3-4.1-7-7Z"/></svg></a>
     <div class="toast" id="toast" hidden></div>
     <script>
       "use strict";
@@ -672,6 +729,12 @@
           footAbout:"Boutique homme : vêtements, traditionnel, chaussures et accessoires — tous les articles sont neufs.",
           footCats:"Catégories", footHelp:"Aide", help1:"Paiement à la livraison", help2:"Livraison partout au Maroc", help3:"Échange sous 7 jours",
           footBase:"Boutique 100% homme — Articles neufs",
+          filterTitle:"Filtres", allSizes:"Toutes les tailles", allColors:"Toutes les couleurs", allPrices:"Tous les prix", clearFilters:"Effacer les filtres", priceUnder:"Moins de %s", priceOver:"Plus de %s", priceLabel:"Prix",
+          aboutLink:"À propos", aboutTitle:"À propos de YaraShop", aboutSub:"Une boutique homme, 100% neuve.",
+          aboutP1:"YaraShop est une boutique en ligne pour hommes : vêtements, tenues traditionnelles, chaussures et accessoires. Tous nos articles sont neufs, jamais portés.",
+          aboutP2:"Commandez en quelques clics et payez à la livraison, partout au Maroc. Une question sur une taille ou un article ? Contactez-nous directement sur WhatsApp, on vous répond avec plaisir.",
+          aboutDelivery:"Livraison", aboutPayment:"Paiement", aboutExchange:"Échange", aboutContact:"Contact", aboutCta:"Contacter sur WhatsApp",
+          waFloatMsg:"Bonjour YaraShop !", waFloatLabel:"Discuter sur WhatsApp",
           marquee:["Livraison partout au Maroc","Paiement à la livraison","100% Homme","Articles neufs","Échange sous 7 jours"] },
         ar:{ all:"الكل", hommes:"رجال", traditionnel:"تقليدي", chaussures:"أحذية", accessoires:"إكسسوارات",
           shopByCat:"تسوق حسب الفئة", shopByCatSub:"أربعة عوالم، رجال 100%.",
@@ -694,6 +757,12 @@
           footAbout:"متجر رجالي: ملابس وتقليدي وأحذية وإكسسوارات — جميع المقالات جديدة.",
           footCats:"الفئات", footHelp:"مساعدة", help1:"الدفع عند الاستلام", help2:"التوصيل لجميع أنحاء المغرب", help3:"التبديل في ظرف 7 أيام",
           footBase:"متجر رجال 100% — مقالات جديدة",
+          filterTitle:"الفلاتر", allSizes:"كل المقاسات", allColors:"كل الألوان", allPrices:"كل الأثمنة", clearFilters:"مسح الفلاتر", priceUnder:"أقل من %s", priceOver:"أكثر من %s", priceLabel:"الثمن",
+          aboutLink:"من نحن", aboutTitle:"من نحن — YaraShop", aboutSub:"متجر رجالي، جديد 100%.",
+          aboutP1:"YaraShop متجر إلكتروني خاص بالرجال: ملابس وتقليدي وأحذية وإكسسوارات. جميع مقالاتنا جديدة، لم تلبس أبداً.",
+          aboutP2:"اطلب في بضع نقرات وادفع عند الاستلام، في جميع أنحاء المغرب. سؤال حول مقاس أو مقال؟ تواصل معنا مباشرة عبر واتساب، نجيبك بكل سرور.",
+          aboutDelivery:"التوصيل", aboutPayment:"الدفع", aboutExchange:"التبديل", aboutContact:"التواصل", aboutCta:"تواصل عبر واتساب",
+          waFloatMsg:"سلام YaraShop !", waFloatLabel:"تواصل عبر واتساب",
           marquee:["التوصيل لجميع أنحاء المغرب","الدفع عند الاستلام","رجال 100%","مقالات جديدة","التبديل في ظرف 7 أيام"] },
         en:{ all:"All", hommes:"Men", traditionnel:"Traditional", chaussures:"Shoes", accessoires:"Accessories",
           shopByCat:"Shop by category", shopByCatSub:"Four worlds, 100% men.",
@@ -716,6 +785,12 @@
           footAbout:"Men's shop: clothing, traditional wear, shoes and accessories — every item is brand new.",
           footCats:"Categories", footHelp:"Help", help1:"Cash on delivery", help2:"Delivery all over Morocco", help3:"Exchange within 7 days",
           footBase:"100% men's shop — Brand-new items",
+          filterTitle:"Filters", allSizes:"All sizes", allColors:"All colors", allPrices:"All prices", clearFilters:"Clear filters", priceUnder:"Under %s", priceOver:"Over %s", priceLabel:"Price",
+          aboutLink:"About", aboutTitle:"About YaraShop", aboutSub:"A men's shop, 100% brand new.",
+          aboutP1:"YaraShop is an online shop for men: clothing, traditional wear, shoes and accessories. Every item is brand new, never worn.",
+          aboutP2:"Order in a few clicks and pay on delivery, anywhere in Morocco. A question about a size or an item? Message us directly on WhatsApp — we'll happily help.",
+          aboutDelivery:"Delivery", aboutPayment:"Payment", aboutExchange:"Exchange", aboutContact:"Contact", aboutCta:"Contact us on WhatsApp",
+          waFloatMsg:"Hello YaraShop!", waFloatLabel:"Chat on WhatsApp",
           marquee:["Delivery all over Morocco","Cash on delivery","100% Men","Brand-new items","Exchange within 7 days"] }
       };
 
@@ -723,6 +798,9 @@
       var lang = "fr";
       var filter = "all";
       var query = "";
+      var filterSize = "";
+      var filterColor = "";
+      var filterPrice = "";
       var favorites = {};
       var currentSlide = 0;
       var slideTimer = null;
@@ -744,16 +822,19 @@
       }
       function navHTML(){
         var cats = ["all"].concat(allCats());
-        return cats.map(function(c){
+        var html = cats.map(function(c){
           var label = c==="all" ? t("news") : catLabel(c);
           return '<button type="button" data-cat="'+c+'" class="'+(filter===c?"on":"")+'">'+label+"</button>";
         }).join("");
+        return html + '<button type="button" data-about="1">'+t("aboutLink")+"</button>";
       }
       function renderNav(){
         document.getElementById("mainNav").innerHTML = navHTML();
         document.getElementById("mobileNav").innerHTML = navHTML();
-        var btns = document.querySelectorAll("#mainNav button, #mobileNav button");
+        var btns = document.querySelectorAll("#mainNav button:not([data-about]), #mobileNav button:not([data-about])");
         for (var i=0;i<btns.length;i++) btns[i].addEventListener("click", function(){ setFilter(this.getAttribute("data-cat"), true); });
+        var aboutBtns = document.querySelectorAll("#mainNav [data-about], #mobileNav [data-about]");
+        for (var j=0;j<aboutBtns.length;j++) aboutBtns[j].addEventListener("click", openAbout);
       }
       function renderChips(){
         var cats = ["all"].concat(allCats());
@@ -762,6 +843,65 @@
         }).join("");
         var btns = document.querySelectorAll("#chips .chip");
         for (var i=0;i<btns.length;i++) btns[i].addEventListener("click", function(){ setFilter(this.getAttribute("data-cat"), false); });
+      }
+
+      /* ================= Filters (size / color / price) ================= */
+      var PRICE_RANGES = [
+        { v:"u300", min:0, max:300 },
+        { v:"300-500", min:300, max:500 },
+        { v:"500-1000", min:500, max:1000 },
+        { v:"o1000", min:1000, max:Infinity }
+      ];
+      var SIZE_ORDER = ["XS","S","M","L","XL","XXL","XXXL"];
+      function sortSizes(list){
+        return list.slice().sort(function(x,y){
+          var ix = SIZE_ORDER.indexOf(x), iy = SIZE_ORDER.indexOf(y);
+          if (ix!==-1 && iy!==-1) return ix-iy;
+          if (ix!==-1) return -1;
+          if (iy!==-1) return 1;
+          var nx = parseFloat(x), ny = parseFloat(y);
+          if (!isNaN(nx) && !isNaN(ny)) return nx-ny;
+          return String(x).localeCompare(String(y));
+        });
+      }
+      function allSizes(){
+        var list = [];
+        PRODUCTS.forEach(function(p){ productSizes(p).forEach(function(s){ if (list.indexOf(s)===-1) list.push(s); }); });
+        return sortSizes(list);
+      }
+      function allColors(){
+        var list = [];
+        PRODUCTS.forEach(function(p){ productColors(p).forEach(function(c){ if (list.indexOf(c.name)===-1) list.push(c.name); }); });
+        return list;
+      }
+      function priceRangeLabel(r){
+        if (r.v==="u300") return t("priceUnder").replace("%s", fmtPrice(300));
+        if (r.v==="o1000") return t("priceOver").replace("%s", fmtPrice(1000));
+        return fmtPrice(r.min).replace(" MAD", "") + " \u2013 " + fmtPrice(r.max);
+      }
+      function renderFilters(){
+        if (filterSize && allSizes().indexOf(filterSize)===-1) filterSize = "";
+        if (filterColor && allColors().indexOf(filterColor)===-1) filterColor = "";
+        var sz = document.getElementById("filterSize");
+        sz.innerHTML = '<option value="">' + t("allSizes") + '</option>' + allSizes().map(function(s){ return '<option value="'+s+'"'+(s===filterSize?' selected':'')+'>'+s+'</option>'; }).join("");
+        sz.setAttribute("aria-label", t("size"));
+        var cl = document.getElementById("filterColor");
+        cl.innerHTML = '<option value="">' + t("allColors") + '</option>' + allColors().map(function(c){ return '<option value="'+c+'"'+(c===filterColor?' selected':'')+'>'+c+'</option>'; }).join("");
+        cl.setAttribute("aria-label", t("color"));
+        var pr = document.getElementById("filterPrice");
+        pr.innerHTML = '<option value="">' + t("allPrices") + '</option>' + PRICE_RANGES.map(function(r){ return '<option value="'+r.v+'"'+(r.v===filterPrice?' selected':'')+'>'+priceRangeLabel(r)+'</option>'; }).join("");
+        pr.setAttribute("aria-label", t("priceLabel"));
+        updateClearFilters();
+      }
+      function filtersActive(){ return !!(filterSize || filterColor || filterPrice || filter!=="all" || query); }
+      function updateClearFilters(){
+        var b = document.getElementById("clearFilters");
+        if (b) b.hidden = !filtersActive();
+      }
+      function clearFilters(){
+        filter = "all"; query = ""; filterSize = ""; filterColor = ""; filterPrice = "";
+        var si = document.getElementById("searchInput"); if (si) si.value = "";
+        renderNav(); renderChips(); renderFilters(); renderGrid();
       }
       function renderTiles(){
         document.getElementById("tiles").innerHTML = allTiles().map(function(tl){
@@ -805,6 +945,13 @@
             var names = p.name.fr+" "+p.name.ar+" "+p.name.en;
             if (names.toLowerCase().indexOf(query.toLowerCase())===-1) return false;
           }
+          if (filterSize && productSizes(p).indexOf(filterSize)===-1) return false;
+          if (filterColor && !productColors(p).some(function(c){ return c.name===filterColor; })) return false;
+          if (filterPrice){
+            var r = null;
+            for (var i=0;i<PRICE_RANGES.length;i++) if (PRICE_RANGES[i].v===filterPrice) r = PRICE_RANGES[i];
+            if (r && (p.price < r.min || p.price >= r.max)) return false;
+          }
           return true;
         });
       }
@@ -815,6 +962,7 @@
         document.getElementById("emptyMsg").hidden = list.length>0;
         document.getElementById("prodCount").textContent = list.length+" "+(list.length===1?t("article"):t("articles"));
         bindCards(grid);
+        updateClearFilters();
       }
       function renderServices(){
         document.getElementById("services").innerHTML = SERVICES.map(function(s){
@@ -879,6 +1027,10 @@
       /* ================= Views ================= */
       function setFilter(cat, scroll){
         filter = cat;
+        if (currentProduct){ stopPhotoTimer(); currentProduct = null; }
+        document.getElementById("aboutView").hidden = true;
+        document.getElementById("homeView").style.display = "block";
+        document.getElementById("detailView").style.display = "none";
         renderNav(); renderChips(); renderGrid();
         if (scroll) document.getElementById("shop").scrollIntoView({behavior: reduced?"auto":"smooth"});
       }
@@ -1055,6 +1207,7 @@
         renderDetailFav();
         renderAlso();
         restartPhotoTimer();
+        document.getElementById("aboutView").hidden = true;
         document.getElementById("homeView").style.display = "none";
         document.getElementById("detailView").style.display = "block";
         window.scrollTo({top:0, behavior:"auto"});
@@ -1081,6 +1234,27 @@
         document.getElementById("detailView").style.display = "none";
         document.getElementById("homeView").style.display = "block";
         document.getElementById("shop").scrollIntoView({behavior:"auto"});
+      }
+
+      /* ================= About view + floating WhatsApp ================= */
+      function openAbout(){
+        if (currentProduct){ stopPhotoTimer(); currentProduct = null; }
+        document.getElementById("homeView").style.display = "none";
+        document.getElementById("detailView").style.display = "none";
+        document.getElementById("aboutView").hidden = false;
+        window.scrollTo({top:0, behavior:"auto"});
+      }
+      function closeAbout(){
+        document.getElementById("aboutView").hidden = true;
+        document.getElementById("homeView").style.display = "block";
+        window.scrollTo({top:0, behavior:"auto"});
+      }
+      function updateWaFloat(){
+        var href = waLink(t("waFloatMsg"));
+        var f = document.getElementById("waFloat");
+        if (f){ f.href = href; f.setAttribute("aria-label", t("waFloatLabel")); }
+        var a = document.getElementById("aboutWhats");
+        if (a) a.href = href;
       }
 
       /* ================= Cart (Panier) ================= */
@@ -1261,14 +1435,14 @@
         /* Re-render everything that contains translated text (grid cards with
            their promo badges, nav, chips, tiles, services, footer, marquee,
            hero copy) so the whole shop switches language, not just the labels. */
-        renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid();
+        renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrid();
         renderServices(); renderFootCats(); updateHeroCopy();
-        renderCart();
+        renderCart(); updateWaFloat();
         var btns = document.querySelectorAll(".lang-switch button");
         for (var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i].getAttribute("data-lang")===l);
         if (currentProduct) openDetail(currentProduct.id);
       }
-      function initSite(){ updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); }
+      function initSite(){ updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); updateWaFloat(); }
       loadProducts().then(initSite);
 
       /* ================= Init ================= */
@@ -1276,6 +1450,12 @@
         b.addEventListener("click", function(){ setLang(this.getAttribute("data-lang")); });
       });
       document.getElementById("searchInput").addEventListener("input", function(){ query = this.value.trim(); renderGrid(); });
+      document.getElementById("filterSize").addEventListener("change", function(){ filterSize = this.value; renderGrid(); });
+      document.getElementById("filterColor").addEventListener("change", function(){ filterColor = this.value; renderGrid(); });
+      document.getElementById("filterPrice").addEventListener("change", function(){ filterPrice = this.value; renderGrid(); });
+      document.getElementById("clearFilters").addEventListener("click", clearFilters);
+      document.getElementById("aboutBackBtn").addEventListener("click", closeAbout);
+      document.getElementById("footAboutBtn").addEventListener("click", openAbout);
       document.getElementById("heroPrev").addEventListener("click", function(){ goSlide(currentSlide-1); });
       document.getElementById("heroNext").addEventListener("click", function(){ goSlide(currentSlide+1); });
       document.getElementById("heroCta").addEventListener("click", function(){ setFilter(this.getAttribute("data-cat"), true); });
@@ -1285,6 +1465,7 @@
       document.getElementById("logoHome").addEventListener("click", function(e){
         e.preventDefault();
         if (currentProduct) closeDetail();
+        closeAbout();
         window.scrollTo({top:0, behavior: reduced?"auto":"smooth"});
       });
       document.getElementById("dFav").addEventListener("click", function(){ if (currentProduct) toggleFav(currentProduct.id); });
@@ -1307,9 +1488,9 @@
       document.getElementById("dNext").addEventListener("click", function(){ showPhoto(currentPhoto+1); restartPhotoTimer(); });
       document.querySelector(".detail .gallery").addEventListener("mouseenter", stopPhotoTimer);
       document.querySelector(".detail .gallery").addEventListener("mouseleave", restartPhotoTimer);
-      document.addEventListener("keydown", function(e){ if (e.key==="Escape"){ if (cartIsOpen()) closeCart(); else if (currentProduct) closeDetail(); } });
+      document.addEventListener("keydown", function(e){ if (e.key==="Escape"){ if (cartIsOpen()) closeCart(); else if (currentProduct) closeDetail(); else if (!document.getElementById("aboutView").hidden) closeAbout(); } });
 
-      updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay();
+      updateThemeBtn(); applyI18n(); renderMarquee(); renderNav(); renderChips(); renderFilters(); renderTiles(); renderGrid(); renderServices(); renderFootCats(); renderSlides(); restartAutoplay(); updateWaFloat();
     </script>
   </body>
 </html>
