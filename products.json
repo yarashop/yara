@@ -1,27 +1,3 @@
 {
-  "products": [
-    {
-      "id": "veste-jean",
-      "name": {
-        "fr": "TEST - Veste en jean",
-        "ar": "TEST - جاكيت جين",
-        "en": "TEST - Denim jacket"
-      },
-      "price": 349,
-      "size": "M",
-      "cat": "hommes",
-      "img": "/images/products/test-veste-en-jean.jpg",
-      "desc": {
-        "fr": "Veste en jean bleu foncé, boutons métalliques et poches poitrine. Un classique à porter toute l'année.",
-        "ar": "جاكيت جين أزرق غامق، أزرار معدنية وجيوب على الصدر. قطعة كلاسيكية تلبس طوال السنة.",
-        "en": "Dark blue denim jacket with metal buttons and chest pockets. A classic to wear all year round."
-      },
-      "alt": {
-        "fr": "Homme portant une veste en jean bleu foncé",
-        "ar": "رجل يرتدي جاكيت جين أزرق غامق",
-        "en": "Man wearing a dark blue denim jacket"
-      },
-      "published": true
-    }
-  ]
+  "products": []
 }
